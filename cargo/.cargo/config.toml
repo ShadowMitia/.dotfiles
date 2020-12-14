@@ -1,3 +1,9 @@
+
+From # https://wiki.archlinux.org/index.php/rust#sccache
+[build]
+rustc-wrapper = "sccache"
+
+
 # From https://bevyengine.org/learn/book/getting-started/setup/#enable-fast-compiles-optional
 # Rename this file to `config.toml` to enable "fast build" configuration. Please read the notes below.
 
