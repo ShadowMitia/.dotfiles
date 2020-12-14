@@ -1,3 +1,14 @@
+#+title: Emacs configuratio
+
+You need to install https://github.com/rougier/nano-emacs at the root of .emacs.d
+
+
+* Initialise and configure package manager
+
+`package.el` is used to manage packages on emacs.
+
+
+#+begin_src emcas-lisp
 (set-language-environment "UTF-8")
 
 (require 'package)
@@ -205,3 +216,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+#+end_src
