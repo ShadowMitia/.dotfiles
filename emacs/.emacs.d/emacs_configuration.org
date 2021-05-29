@@ -13,8 +13,8 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
 
     (require 'package)
 
-    (when (< emacs-major-version 27)
-      (package-initialize))
+;    (when (< emacs-major-version 27)
+;      (package-initialize))
 
     (setq package-enable-at-startup nil)
     (add-to-list 'package-archives
@@ -92,6 +92,9 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       ;; Nano counsel configuration (optional)
       ;; Needs "counsel" package to be installed (M-x: package-install)
       ;; (require 'nano-counsel)
+
+      ;; Nano writer
+      (require 'nano-writer)
 
       ;; Welcome message (optional)
       (let ((inhibit-message t))
@@ -287,6 +290,10 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
 
   #+end_src
 
+
+  #+begin src
+(use-package gdscript-mode)
+  #+end_src
 
   References :
   - https://jamiecollinson.com/blog/my-emacs-config/

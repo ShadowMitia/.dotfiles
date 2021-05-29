@@ -3,3 +3,7 @@
 # Please adapt and uncomment the following lines:
 	name = Dimitri Belopopsky
 	email = dimitri@belopopsky.com
+[pull]
+	rebase = true
+[init]
+	defaultBranch = main

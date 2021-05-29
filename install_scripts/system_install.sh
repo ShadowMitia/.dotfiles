@@ -5,6 +5,9 @@
 # TODO: split this up into groups to make some optional
 # TODO: think about best way of making this more cross-platform
 
+# TODO: manage git based stuff
+# https://gitlab.com/jallbrit/cbonsai
+
 if ! [ $(id -u) = 0 ]; then
    echo "The script need to be run as root." >&2
    exit 1
@@ -50,7 +53,8 @@ apt install apt-transport-https \
             xr-hardware \
             stow \
             htop \
-            clang
+            clang \
+            nvtop \
 
 
 sudo -u $real_user pip3 install --user youtube_dl pygments

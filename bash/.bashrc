@@ -134,7 +134,7 @@ function dllist
     else
   if [ -z $2 ]
   then
-      youtube-dl -c --add-metadata--embed-thumbnail --embed-subs --i --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}"
+      youtube-dl -c --add-metadata --embed-thumbnail --embed-subs -i --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}"
   else
       youtube-dl -c --add-metadata --embed-thumbnail --embed-subs --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}" --playlist-items $2
   fi
@@ -208,8 +208,6 @@ function sl
 
 function cleanup
 {
-    echo "=== Cleaning up DNF ===";
-    sudo dnf clean all
     echo "=== Cleaning up logs ===";
     sudo journalctl --vacuum-size=128M; #http://www.commitstrip.com/en/2017/01/16/nice-try/
     echo "=== Checking logs integrity ===";
@@ -217,4 +215,26 @@ function cleanup
     echo "=== Done cleaning ===";
 }
 
+function update_rust_analyzer {
+    curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o ~/.local/bin/rust-analyzer
+    chmod +x ~/.local/bin/rust-analyzer
+}
+
 alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+alias cat="bat"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/dimitri/.miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/dimitri/.miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/dimitri/.miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/dimitri/.miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
