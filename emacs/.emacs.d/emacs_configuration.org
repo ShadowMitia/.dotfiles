@@ -1,4 +1,4 @@
-#+title: Emacs configuratio
+#+title: Emacs configuration
 
 You need to install https://github.com/rougier/nano-emacs at the root of .emacs.d
 
@@ -13,21 +13,35 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
 
     (require 'package)
 
-;    (when (< emacs-major-version 27)
-;      (package-initialize))
+    (when (< emacs-major-version 27)
+      (package-initialize))
 
+    ;; Add MELPA repo
     (setq package-enable-at-startup nil)
     (add-to-list 'package-archives
-                 '("melpa" . "https://melpa.org/packages/"))
+		 '("melpa" . "https://melpa.org/packages/"))
 
-
-    ;; Bootstrap `use-package'
+    ;; Bootstrap `use-package`
     (unless (package-installed-p 'use-package)
       (package-refresh-contents)
       (package-install 'use-package))
 
+    ;; Boostrap `quelpa`
+    (unless (package-installed-p 'quelpa)
+      (with-temp-buffer
+	(url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+	(eval-buffer)
+	(quelpa-self-upgrade))
+
+      (quelpa
+       '(quelpa-use-package
+	 :fetcher git
+	 :url "https://github.com/quelpa/quelpa-use-package.git"))
+      )
+
     (eval-when-compile
-      (require 'use-package))
+      (require 'use-package)
+      (require 'quelpa-use-package))
 
     ;; Always havve the packages installed and ready to be used
     (setq use-package-always-ensure t)
@@ -38,77 +52,12 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       (setq auto-package-update-hide-results t)
       (auto-package-update-maybe))
 
-    (use-package nano
-      :load-path "nano-emacs"
-      :init
-
-      ;; Window layout (optional)
-      (require 'nano-layout)
-
-      ;; Theming Command line options (this will cancel warning messages)
-      (add-to-list 'command-switch-alist '("-dark"   . (lambda (args))))
-      (add-to-list 'command-switch-alist '("-light"  . (lambda (args))))
-      (add-to-list 'command-switch-alist '("-default"  . (lambda (args))))
-
-      (cond
-       ((member "-default" command-line-args) t)
-       ((member "-dark" command-line-args) (require 'nano-theme-dark))
-       (t (require 'nano-theme-light)))
-
-      ;; Customize support for 'emacs -q' (Optional)
-      ;; You can enable customizations by creating the nano-custom.el file
-      ;; with e.g. `touch nano-custom.el` in the folder containing this file.
-      (let* ((this-file  (or load-file-name (buffer-file-name)))
-             (this-dir  (file-name-directory this-file))
-             (custom-path  (concat this-dir "nano-custom.el")))
-        (when (and (eq nil user-init-file)
-                   (eq nil custom-file)
-                   (file-exists-p custom-path))
-          (setq user-init-file this-file)
-          (setq custom-file custom-path)
-          (load custom-file)))
-
-      ;; Theme
-      (require 'nano-faces)
-      (nano-faces)
-
-      (require 'nano-theme)
-      (nano-theme)
-
-      (require 'nano-theme-dark)
-
-      ;; Nano default settings (optional)
-      (require 'nano-defaults)
-
-      ;; Nano session saving (optional)
-      (require 'nano-session)
-
-      ;; Nano header & mode lines (optional)
-      (require 'nano-modeline)
-
-      ;; Nano key bindings modification (optional)
-      (require 'nano-bindings)
-
-      ;; Nano counsel configuration (optional)
-      ;; Needs "counsel" package to be installed (M-x: package-install)
-      ;; (require 'nano-counsel)
-
-      ;; Nano writer
-      (require 'nano-writer)
-
-      ;; Welcome message (optional)
-      (let ((inhibit-message t))
-        (message "Welcome to GNU Emacs / N Λ N O edition")
-        (message (format "Initialization time: %s" (emacs-init-time))))
-
-      ;; Splash and help (optional)
-      (add-to-list 'command-switch-alist '("-no-splash" . (lambda (args))))
-      (unless (member "-no-splash" command-line-args)
-        (require 'nano-help)
-        (require 'nano-splash))
-      )
-
-
+    (use-package nano-theme
+      :ensure nil
+      :defer t
+      :quelpa (nano-theme
+	       :fetcher github
+	       :repo "rougier/nano-theme"))
 
     (menu-bar-mode -1)
     (toggle-scroll-bar -1)
@@ -159,38 +108,38 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       (setq-default flycheck-highlighting-mode 'lines)
       ;; Define fringe indicator / warning levels
       (define-fringe-bitmap 'flycheck-fringe-bitmap-ball
-        (vector #b00000000
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00011100
-                #b00111110
-                #b00111110
-                #b00111110
-                #b00011100
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00000000
-                #b00000000))
+	(vector #b00000000
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00011100
+		#b00111110
+		#b00111110
+		#b00111110
+		#b00011100
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00000000
+		#b00000000))
       (flycheck-define-error-level 'error
-        :severity 2
-        :overlay-category 'flycheck-error-overlay
-        :fringe-bitmap 'flycheck-fringe-bitmap-ball
-        :fringe-face 'flycheck-fringe-error)
+	:severity 2
+	:overlay-category 'flycheck-error-overlay
+	:fringe-bitmap 'flycheck-fringe-bitmap-ball
+	:fringe-face 'flycheck-fringe-error)
       (flycheck-define-error-level 'warning
-        :severity 1
-        :overlay-category 'flycheck-warning-overlay
-        :fringe-bitmap 'flycheck-fringe-bitmap-ball
-        :fringe-face 'flycheck-fringe-warning)
+	:severity 1
+	:overlay-category 'flycheck-warning-overlay
+	:fringe-bitmap 'flycheck-fringe-bitmap-ball
+	:fringe-face 'flycheck-fringe-warning)
       (flycheck-define-error-level 'info
-        :severity 0
-        :overlay-category 'flycheck-info-overlay
-        :fringe-bitmap 'flycheck-fringe-bitmap-ball
-        :fringe-face 'flycheck-fringe-info))
+	:severity 0
+	:overlay-category 'flycheck-info-overlay
+	:fringe-bitmap 'flycheck-fringe-bitmap-ball
+	:fringe-face 'flycheck-fringe-info))
 
     (use-package flycheck-rust
       :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
@@ -209,7 +158,7 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       (setq lsp-rust-analyzer-cargo-watch-command "clippy")
       (setq rustic-flycheck-clippy-params "--message-format=json")
       (add-to-list 'company-backends
-                   '(company-rust :with company-capf))
+		   '(company-rust :with company-capf))
       :commands rustic-mode
       )
 
@@ -235,22 +184,22 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       (org-babel-do-load-languages
        'org-babel-load-languages
        '(
-         (emacs-lisp . t)
-         (org . t)
-         (shell . t)
-         (C . t)
-         (python . t)
-         (css . t)
-         (ocaml . t)
-         (js . t)
-         (latex . t)
-         (dot . t)
-         (ditaa . t)
-         (makefile . t)
-         (processing .t)
-         (sql . t)
-         (sqlite . t)
-         ))
+	 (emacs-lisp . t)
+	 (org . t)
+	 (shell . t)
+	 (C . t)
+	 (python . t)
+	 (css . t)
+	 (ocaml . t)
+	 (js . t)
+	 (latex . t)
+	 (dot . t)
+	 (ditaa . t)
+	 (makefile . t)
+	 (processing .t)
+	 (sql . t)
+	 (sqlite . t)
+	 ))
 
       :config
       (setq org-src-fontify-natively t)
@@ -258,12 +207,12 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
       )
 
     (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-          backup-by-copying t    ; Don't delink hardlinks
-          version-control t      ; Use version numbers on backups
-          delete-old-versions t  ; Automatically delete excess backups
-          kept-new-versions 20   ; how many of the newest versions to keep
-          kept-old-versions 5    ; and how many of the old
-          )
+	  backup-by-copying t    ; Don't delink hardlinks
+	  version-control t      ; Use version numbers on backups
+	  delete-old-versions t  ; Automatically delete excess backups
+	  kept-new-versions 20   ; how many of the newest versions to keep
+	  kept-old-versions 5    ; and how many of the old
+	  )
 
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -292,7 +241,7 @@ You need to install https://github.com/rougier/nano-emacs at the root of .emacs.
 
 
   #+begin src
-(use-package gdscript-mode)
+  (use-package gdscript-mode)
   #+end_src
 
   References :
