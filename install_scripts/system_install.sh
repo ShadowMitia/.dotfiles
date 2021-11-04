@@ -8,12 +8,12 @@
 # TODO: manage git based stuff
 # https://gitlab.com/jallbrit/cbonsai
 
-if ! [ $(id -u) = 0 ]; then
+if ! [ "$(id -u)" = 0 ]; then
    echo "The script need to be run as root." >&2
    exit 1
 fi
 
-if [ $SUDO_USER ]; then
+if [ "$SUDO_USER" ]; then
     real_user=$SUDO_USER
 else
     real_user=$(whoami)
@@ -55,10 +55,19 @@ apt install apt-transport-https \
             htop \
             clang \
             nvtop \
+            fzf \
+            shellcheck \
+            linux-tools-common linux-tools-generic linux-tools-`uname -r` \
+            kcachegrind perf \
+            zola \
+            gamemode \
+            transmission-gtk \
+            fzf gnuplot \
+            build-essential
 
 
-sudo -u $real_user pip3 install --user youtube_dl pygments
-sudo -u $real_user flatpak install flathub com.spotify.Client \
+sudo -u "$real_user" pip3 install --user youtube_dl pygments
+sudo -u "$real_user" flatpak install flathub com.spotify.Client \
                                            com.discordapp.Discord \
                                            com.mojang.Minecraft \
                                            com.obsproject.Studio \
@@ -68,9 +77,9 @@ sudo -u $real_user flatpak install flathub com.spotify.Client \
                                            com.slack.Slack
 
 # Install cargo and Rust
-sudo -u $real_user curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo -u $real_user sh
-sudo -u $real_user echo "export PATH=\"$HOME/.cargo/bin:$PATH\"" >> $HOME/.bashrc_profile
+sudo -u "$real_user" curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo -u "$real_user" sh
+echo "export PATH=\"$HOME/.cargo/bin:$PATH\"" | sudo -u "$real_user" tee "$HOME/.bashrc_profile"
 
-sudo -u $real_user source $HOME/.bashrc
+sudo -u "$real_user" sh -c source "$HOME/.bashrc"
 
-sudo -u $real_user cargo install topgrade hexyl sccache bindgen cargo-watch cargo-edit cargo-audit
+sudo -u "$real_user" cargo install topgrade cargo-update hexyl sccache bindgen cargo-watch cargo-edit cargo-audit steam_randomiser
