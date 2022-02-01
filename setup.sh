@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # From : https://writingco.de/blog/how-i-manage-my-dotfiles-using-gnu-stow/
 
+user=$(whoami)
 
 # what directories should be installable by all users including the root user
 base=(
@@ -17,26 +18,28 @@ useronly=(
 
 # run the stow command for the passed in directory ($2) in location $1
 stowit() {
-    usr=$1
+    path=$1
     app=$2
+    echo "$app"
     # -v verbose
     # -R recursive
     # -t target
-    stow -v -R -t ${usr} ${app}
+    stow -d ~/.dotfiles -v -t "$path" -R "${app}"
 }
 
 echo ""
-echo "Stowing apps for user: ${whoami}"
+echo "Stowing apps for user: $user" 
+
 
 # install apps available to local users and root
-for app in ${base[@]}; do
-    stowit "${HOME}" $app
+for app in "${base[@]}"; do
+    stowit "${HOME}" "$app"
 done
 
 # install only user space folders
-for app in ${useronly[@]}; do
-    if ! [ "$(whoami)" = *"root"* ]; then
-        stowit "${HOME}" $app
+for app in "${useronly[@]}"; do
+    if ! [ "$user" = "root" ]; then
+        stowit "$HOME" "$app"
     fi
 done
 

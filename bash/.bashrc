@@ -122,7 +122,7 @@ function dla
     then
   echo 'Usage: dla "URL"'
     else
-  youtube-dl --add-metadata --write-all-thumbnails --embed-thumbnail --write-info-json --embed-subs --all-subs -i --prefer-free-formats -o '~/Music/Downloads/%(title)s.%(ext)s'  --download-archive ~/Music/Downloads/archive.txt  --extract-audio $1
+  yt-dlp --downloader aria2c --add-metadata --write-all-thumbnails --embed-thumbnail --write-info-json --embed-subs --all-subs -i --prefer-free-formats -o '~/Music/Downloads/%(title)s.%(ext)s'  --download-archive ~/Music/Downloads/archive.txt  --extract-audio $1
     fi
 }
 
@@ -134,9 +134,9 @@ function dllist
     else
   if [ -z $2 ]
   then
-      youtube-dl -c --add-metadata --embed-thumbnail --embed-subs -i --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}"
+      yt-dlp --downloader aria2c -c --add-metadata --embed-thumbnail --embed-subs -i --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}"
   else
-      youtube-dl -c --add-metadata --embed-thumbnail --embed-subs --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}" --playlist-items $2
+      yt-dlp --downloader aria2c -c --add-metadata --embed-thumbnail --embed-subs --prefer-free-formats -o "~/Videos/Downloads/%(playlist)s/[%(playlist_index)s]-%(title)s.%(ext)s"  --download-archive ~/Videos/Downloads/archive.txt "${1}" --playlist-items $2
   fi
     fi
 }
@@ -148,14 +148,14 @@ function dl
     then
   echo 'Usage: dl "URL"'
     else
-      youtube-dl -c --add-metadata --embed-thumbnail --embed-subs --all-subs -i --prefer-free-formats -o '~/Videos/Downloads/%(title)s.%(ext)s'  --download-archive ~/Videos/Downloads/archive.txt $1
+      yt-dlp --downloader aria2c -c --add-metadata --embed-thumbnail --embed-subs --all-subs -i --prefer-free-formats -o '~/Videos/Downloads/%(title)s.%(ext)s'  --download-archive ~/Videos/Downloads/archive.txt $1
     fi
 }
 
 # the fuck : https://github.com/nvbn/thefuck
 if command -v thefuck &> /dev/null
 then
-    eval $(thefuck --alias)
+    eval "$(thefuck --alias)"
 fi
 
 
@@ -220,7 +220,7 @@ function update_rust_analyzer {
     chmod +x ~/.local/bin/rust-analyzer
 }
 
-alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+# alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 alias cat="bat"
 
 # >>> conda initialize >>>

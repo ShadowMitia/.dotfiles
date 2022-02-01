@@ -34,13 +34,14 @@ no_retry = true
 # Cleanup temporary or old files
 #cleanup = true
 
-#[git]
-#max_concurrency = 5
+[git]
+# max_concurrency = 5
 # Additional git repositories to pull
-#repos = [
-#    "~/src/*/",
-#    "~/.config/something"
-#]
+repos = [
+"~/gits/algorithm-archive",
+"~/gits/moderncv",
+"~/gits/YACHT",
+]
 
 # Don't pull the predefined git repos
 #predefined_repos = false
