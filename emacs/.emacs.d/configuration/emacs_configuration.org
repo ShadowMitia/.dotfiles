@@ -5,15 +5,8 @@ TODO: try https://github.com/emacs-lsp/dap-mode
 * Initialise and configure package manager
 
   #+begin_src emacs-lisp
-    (set-language-environment "UTF-8")
-
-    (menu-bar-mode -1)
-    (toggle-scroll-bar -1)
-    (tool-bar-mode -1)
-
-
     (when (< emacs-major-version 27)
-      (require 'packages)
+      (require 'package)
       (package-initialize)
       ;; Add MELPA repo
       (setq package-enable-at-startup nil)
@@ -23,6 +16,14 @@ TODO: try https://github.com/emacs-lsp/dap-mode
 
     (when (>= emacs-major-version 27)
       (setq package-enable-at-startup nil))
+
+
+    (set-language-environment "UTF-8")
+
+    (menu-bar-mode -1)
+    (toggle-scroll-bar -1)
+    (tool-bar-mode -1)
+
 
 
     ;; Bootstrap `use-package`
@@ -248,3 +249,4 @@ TODO: try https://github.com/emacs-lsp/dap-mode
 
 
   #+end_src
+  

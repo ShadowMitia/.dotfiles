@@ -1,12 +1,5 @@
-(set-language-environment "UTF-8")
-
-    (menu-bar-mode -1)
-    (toggle-scroll-bar -1)
-    (tool-bar-mode -1)
-
-
-    (when (< emacs-major-version 27)
-      (require 'packages)
+(when (< emacs-major-version 27)
+      (require 'package)
       (package-initialize)
       ;; Add MELPA repo
       (setq package-enable-at-startup nil)
@@ -16,6 +9,14 @@
 
     (when (>= emacs-major-version 27)
       (setq package-enable-at-startup nil))
+
+
+    (set-language-environment "UTF-8")
+
+    (menu-bar-mode -1)
+    (toggle-scroll-bar -1)
+    (tool-bar-mode -1)
+
 
 
     ;; Bootstrap `use-package`

@@ -1,1 +1,1 @@
-source "/home/dimitri/gits/emsdk/emsdk_env.sh"
+source "$HOME/gits/emsdk/emsdk_env.sh"
