@@ -1,5 +1,11 @@
 .did_first_setup
 
+session.*
+emacs/.emacs.d/.*
+emacs/.emacs.d/.*/*
+emacs/.emacs.d/straight
+emacs/.emacs.d/transient
+emacs/.emacs.d/var
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,windows,osx,macos,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,windows,osx,macos,linux
@@ -8,8 +14,8 @@
 # -*- mode: gitignore; -*-
 *~
 \#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
+.emacs.desktop
+.emacs.desktop.lock
 *.elc
 auto-save-list
 tramp
@@ -23,17 +29,17 @@ tramp
 *_flymake.*
 
 # eshell files
-/eshell/history
-/eshell/lastdir
+eshell/history
+eshell/lastdir
 
 # elpa packages
-/elpa/
+elpa/
 
 # reftex files
 *.rel
 
 # AUCTeX auto folder
-/auto/
+auto/
 
 # cask packages
 .cask/
