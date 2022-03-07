@@ -261,3 +261,4 @@ TODO: try https://github.com/emacs-lsp/dap-mode
 
   #+end_src
   
+#+begin_src emacs-lisp (setq lsp-tex-server 'digestif) #+end_src 
