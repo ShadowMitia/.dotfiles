@@ -53,6 +53,17 @@ done
 # You might need to reset .zshrc for changes to be made
 # Set ZSH_THEME="powerlevel10k/powerlevel10k" in .zshrc if not done
 
+# Oh my posh install theme install
+mkdir ~/.poshthemes
+wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip
+unzip ~/.poshthemes/themes.zip -d ~/.poshthemes
+chmod u+rw ~/.poshthemes/*.json
+rm ~/.poshthemes/themes.zip
 
 echo ""
 echo "##### ALL DONE"
+if [ -f /usr/local/bin/oh-my-posh ]; do
+    echo "Install oh-my-posh with"
+    echo "sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh"
+    echo "sudo chmod +x /usr/local/bin/oh-my-posh"
+done

@@ -22,3 +22,5 @@
 
 [interactive]
     diffFilter = delta --color-only
+[color]
+	ui = auto

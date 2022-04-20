@@ -189,11 +189,6 @@ function extract {
     fi
 }
 
-
-# Banish all evil!
-alias vim="emacs"
-alias vi="emacs"
-
 function sl
 {
     # sl - prints a mirror image of ls. (C) 2017 Tobias Girstmair, https://gir.st/, GPLv3
@@ -222,19 +217,9 @@ function update_rust_analyzer {
 
 # alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 alias cat="bat"
+# Banish all evil!
+alias vim="emacs"
+alias vi="emacs"
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/dimitri/.miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/dimitri/.miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/dimitri/.miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/dimitri/.miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
+ # oh my posh
+eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"

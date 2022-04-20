@@ -4,261 +4,511 @@ TODO: try https://github.com/emacs-lsp/dap-mode
 
 * Initialise and configure package manager
 
+#+begin_src
+(setq-default
+ auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
+ cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
+ delete-by-moving-to-trash t            ; Delete files to trash
+ fill-column 80                         ; Set width for automatic line breaks
+ gc-cons-threshold (* 8 1024 1024)      ; We're not using Game Boys anymore
+ inhibit-startup-screen t               ; Disable start-up screen
+ initial-scratch-message ""             ; Empty the initial *scratch* buffer
+ mouse-yank-at-point t                  ; Yank at point rather than pointer
+ native-comp-async-report-warnings-errors 'silent ; Skip compilation error buffers
+ read-process-output-max (* 1024 1024)  ; Increase read size per process
+ scroll-conservatively 101              ; Avoid recentering when scrolling far
+ scroll-margin 2                        ; Add a margin when scrolling vertically
+ select-enable-clipboard t              ; Merge system's and Emacs' clipboard
+ sentence-end-double-space nil          ; Use a single space after dots
+ show-help-function nil                 ; Disable help text everywhere
+ tab-always-indent 'complete            ; Indent first then try completions
+ use-short-answers t                    ; Replace yes/no prompts with y/n
+ window-combination-resize t            ; Resize windows proportionally
+ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+
+(blink-cursor-mode 0)                   ; Prefer a still cursor
+(delete-selection-mode 1)               ; Replace region when inserting text
+(global-subword-mode 1)                 ; Iterate through CamelCase words
+(mouse-avoidance-mode 'exile)           ; Avoid collision of mouse with point
+(put 'downcase-region 'disabled nil)    ; Enable downcase-region
+(put 'upcase-region 'disabled nil)      ; Enable upcase-region
+(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+#+end_src
+
   #+begin_src emacs-lisp
-		    (when (< emacs-major-version 27)
-		      (require 'package)
-		      (package-initialize)
-		      ;; Add MELPA repo
-		      (setq package-enable-at-startup nil)
-		      (add-to-list 'package-archives
-				   '("melpa" . "https://melpa.org/packages/"))
-		      )
+	    (when (< emacs-major-version 27)
+	      (require 'package)
+	      (package-initialize)
+	      ;; Add MELPA repo
+	      (setq package-enable-at-startup nil)
+	      (add-to-list 'package-archives
+			   '("melpa" . "https://melpa.org/packages/"))
+	      )
 
-		    (when (>= emacs-major-version 27)
-		      (setq package-enable-at-startup nil))
+	    (when (>= emacs-major-version 27)
+	      (setq package-enable-at-startup nil))
 
+#+end_src
 
-		    (set-language-environment "UTF-8")
+#+begin_src emacs-lisp
 
-		    (menu-bar-mode -1)
-		    (toggle-scroll-bar -1)
-		    (tool-bar-mode -1)
+	(menu-bar-mode -1)
+	(toggle-scroll-bar -1)
+	(tool-bar-mode -1)
 
+#+end_src
 
+#+begin_src emacs-lisp
 
-		    ;; Bootstrap `use-package`
-		    ;; (unless (package-installed-p 'use-package)
-		    ;;   (package-refresh-contents)
-		    ;;   (package-install 'use-package))
-
-
-		    ;; Boostrap `streight.el`
-		    (defvar bootstrap-version)
-		    (let ((bootstrap-file
-			   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-			  (bootstrap-version 5))
-		      (unless (file-exists-p bootstrap-file)
-			(with-current-buffer
-			    (url-retrieve-synchronously
-			     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-			     'silent 'inhibit-cookies)
-			  (goto-char (point-max))
-			  (eval-print-last-sexp)))
-		      (load bootstrap-file nil 'nomessage))
-
-		    (straight-use-package 'use-package) ;; Install use-package
-                    (straight-use-package 'project)
-
-		    (setq straight-use-package-by-default t)
-
-		    ;; Always have the packages installed and ready to be used
-		    (setq use-package-always-ensure t)
-
-		    ;; (use-package auto-package-update
-		    ;;   :config
-		    ;;   (setq auto-package-update-delete-old-versions t)
-		    ;;   (setq auto-package-update-hide-results t)
-		    ;;   (auto-package-update-maybe))
-
-		    (use-package nano-theme)
-		    (nano-mode)
-		    (nano-dark)
-
-		    (use-package nano-modeline)
-		    (nano-modeline-mode)
+	;; Bootstrap `use-package`
+	;; (unless (package-installed-p 'use-package)
+	;;   (package-refresh-contents)
+	;;   (package-install 'use-package))
 
 
-		    (setq inhibit-startup-screen t)
+	;; Boostrap `streight.el`
+	(defvar bootstrap-version)
+	(let ((bootstrap-file
+	       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	      (bootstrap-version 5))
+	  (unless (file-exists-p bootstrap-file)
+	    (with-current-buffer
+		(url-retrieve-synchronously
+		 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+		 'silent 'inhibit-cookies)
+	      (goto-char (point-max))
+	      (eval-print-last-sexp)))
+	  (load bootstrap-file nil 'nomessage))
 
-		    ;; ;; (use-package spacemacs-common
-		    ;; ;;     :ensure spacemacs-theme
-		    ;; ;;     :init (load-theme 'spacemacs-dark t))
+	(straight-use-package 'use-package) ;; Install use-package
+	(straight-use-package 'project)
 
-		    (use-package magit
-		      :bind ("C-x g" . magit-status))
+	(setq straight-use-package-by-default t)
 
-		     (use-package magit-gerrit
-		      :config
-		      (setq-default magit-gerrit-remote "gerrit")
-		       )
+	;; Always have the packages installed and ready to be used
+	(setq use-package-always-ensure t)
 
-		    (use-package git-gutter
-		      :config
-		      (global-git-gutter-mode 't))
+	;; (use-package auto-package-update
+	;;   :config
+	;;   (setq auto-package-update-delete-old-versions t)
+	;;   (setq auto-package-update-hide-results t)
+	;;   (auto-package-update-maybe))
 
-		    (use-package lsp-mode
-		      :hook ((prog-mode . lsp))
-		      :config
-		      (setq lsp-completion-provider :capf)
-		      (setq lsp-completion-enable t)
-		      (setq  lsp-lens-enable t)
-		      (setq read-process-output-max (* 2048 4096))
-		      (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
-		      :commands lsp
-		      )
+#+end_src
 
-		    (use-package lsp-ui :commands lsp-ui-mode)
+#+begin_src emacs-lisp
 
-		    (use-package company
-		      :init (global-company-mode)
-		      :config
-		      (setq company-idle-delay 0.0)
-		      (setq company-minimum-prefix-length 1)
-		      (setq lsp-idle-delay 0.1)
-		      )
+	(use-package nano-theme)
+	(nano-mode)
+	(nano-dark)
 
-		    (use-package company-box
-		      :hook (company-mode . company-box-mode)
-		      :custom
-		      (company-box-max-candidates 50)
-		      (company-box-show-single-candidate 'always))
+	(use-package nano-modeline)
+	(nano-modeline-mode)
 
-		    (use-package flycheck
-		      :config
-		      (add-hook 'after-init-hook 'global-flycheck-mode)
-		      (add-to-list 'flycheck-checkers 'proselint)
-		      (setq-default flycheck-highlighting-mode 'lines)
-		      ;; Define fringe indicator / warning levels
-		      (define-fringe-bitmap 'flycheck-fringe-bitmap-ball
-			(vector #b00000000
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00011100
-				#b00111110
-				#b00111110
-				#b00111110
-				#b00011100
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00000000
-				#b00000000))
-		      (flycheck-define-error-level 'error
-			:severity 2
-			:overlay-category 'flycheck-error-overlay
-			:fringe-bitmap 'flycheck-fringe-bitmap-ball
-			:fringe-face 'flycheck-fringe-error)
-		      (flycheck-define-error-level 'warning
-			:severity 1
-			:overlay-category 'flycheck-warning-overlay
-			:fringe-bitmap 'flycheck-fringe-bitmap-ball
-			:fringe-face 'flycheck-fringe-warning)
-		      (flycheck-define-error-level 'info
-			:severity 0
-			:overlay-category 'flycheck-info-overlay
-			:fringe-bitmap 'flycheck-fringe-bitmap-ball
-			:fringe-face 'flycheck-fringe-info))
+#+end_src
 
-		    (use-package flycheck-rust
-		      :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
-		      )
+#+begin_src emacs-lisp
 
-		    (use-package flycheck-clang-tidy
-		      :config '(add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
+	(setq inhibit-startup-screen t)
 
-		    (use-package rust-mode :disabled)
+	;; ;; (use-package spacemacs-common
+	;; ;;     :ensure spacemacs-theme
+	;; ;;     :init (load-theme 'spacemacs-dark t))
 
-		    (use-package rustic
-		      :after (rust-mode)
-		      :mode ("\\.rs\\'" . rustic-mode)
-		      :bind
-		      ("C-c C-c" . rustic-compile)
-		      :config
-		      (setq indent-tabs-mode nil)
-		      (setq rustic-format-on-save t)
-		      (setq lsp-rust-analyzer-cargo-watch-command "clippy")
-		      (setq rustic-flycheck-clippy-params "--message-format=json")
-		      (add-to-list 'company-backends
-				   '(company-rust :with company-capf))
-		      :commands rustic-mode
-		      )
+#+end_src
 
-		    (use-package cargo
-		      :hook (rustic-mode . cargo-minor-mode)
-		      :diminish cargo-minor-mode)
+#+begin_src emacs-lisp
 
-		    (use-package smartparens
-		      :config
-		      (add-hook 'prog-mode-hook 'smartparens-mode))
+	(use-package magit
+	  :bind ("C-x g" . magit-status))
 
-		    (use-package rainbow-delimiters
-		      :config
-		      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+	(use-package magit-gerrit
+	  :config
+	  (setq-default magit-gerrit-remote "gerrit")
+	  )
 
-		    (use-package rainbow-mode
-		      :config
-		      (setq rainbow-x-colors nil)
-		      (add-hook 'prog-mode-hook 'rainbow-mode))
+	(use-package git-gutter
+	  :config
+	  (global-git-gutter-mode 't))
 
-		    (use-package org
-		      :init
-		      (org-babel-do-load-languages
-		       'org-babel-load-languages
-		       '(
-			 (emacs-lisp . t)
-			 (org . t)
-			 (shell . t)
-			 (C . t)
-			 (python . t)
-			 (css . t)
-			 (ocaml . t)
-			 (latex . t)
-			 (dot . t)
-			 (ditaa . t)
-			 (makefile . t)
-			 (processing .t)
-			 (sql . t)
-			 (sqlite . t)
-			 ))
+#+end_src
 
-		      :config
-		      (setq org-src-fontify-natively t)
-		      (setq org-src-tab-acts-natively t)
-		      (setq org-directory "~/kDrive/dropbox/org/")
-		      )
+#+begin_src emacs-lisp
 
-		    (use-package dap-mode) 
+	(use-package lsp-mode
+	  :hook ((prog-mode . lsp))
+	  :config
+	  (setq lsp-completion-provider :capf)
+	  (setq lsp-completion-enable t)
+	  (setq  lsp-lens-enable t)
+	  (setq read-process-output-max (* 2048 4096))
+	  (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
+	  (setq lsp-enable-indentation nil)
+	  :commands lsp
+	  )
 
-		    (use-package yasnippet)
+	(use-package lsp-ui :commands lsp-ui-mode)
 
-		    (with-eval-after-load 'lsp-mode
-		      (require 'dap-cpptools)
-		      (yas-global-mode))
+	(use-package company
+	  :init (global-company-mode)
+	  :config
+	  (setq company-idle-delay 0.0)
+	  (setq company-minimum-prefix-length 1)
+	  (setq lsp-idle-delay 0.1)
+	  )
 
-		    (setq gc-cons-threshold (* 100 1024 1024)
-			  read-process-output-max (* 1024 1024)
-			  treemacs-space-between-root-nodes nil
-			  company-idle-delay 0.0
-			  company-minimum-prefix-length 2
-			  lsp-idle-delay 1)  ;; clangd is fast
+	(use-package company-box
+	  :hook (company-mode . company-box-mode)
+	  :custom
+	  (company-box-max-candidates 50)
+	  (company-box-show-single-candidate 'always))
+
+#+end_src
 
 
-		    (use-package multiple-cursors
-		      :config
-		      (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-		      (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-		      (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-		      (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+#+begin_src emacs-lisp
+(use-package flymake
+:hook ((prog-mode . #'flymake-mode))
+)
+#+end_src
 
-		    (use-package unicode-fonts
-		      :ensure t
-		      :config
-		      (unicode-fonts-setup))
+#+begin_src emacs-lisp :tangle no
 
-		  ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-		(set-fontset-font t 'symbol "Apple Color Emoji")
-		(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-		(set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
-		(set-fontset-font t 'symbol "Symbola" nil 'append)
+	(use-package flycheck
+	  :config
+	  (add-hook 'after-init-hook 'global-flycheck-mode)
+	  (add-to-list 'flycheck-checkers 'proselint)
+	  (setq-default flycheck-highlighting-mode 'lines)
+	  ;; Define fringe indicator / warning levels
+	  (define-fringe-bitmap 'flycheck-fringe-bitmap-ball
+	    (vector #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00011100
+		    #b00111110
+		    #b00111110
+		    #b00111110
+		    #b00011100
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000
+		    #b00000000))
+	  (flycheck-define-error-level 'error
+	    :severity 2
+	    :overlay-category 'flycheck-error-overlay
+	    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+	    :fringe-face 'flycheck-fringe-error)
+	  (flycheck-define-error-level 'warning
+	    :severity 1
+	    :overlay-category 'flycheck-warning-overlay
+	    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+	    :fringe-face 'flycheck-fringe-warning)
+	  (flycheck-define-error-level 'info
+	    :severity 0
+	    :overlay-category 'flycheck-info-overlay
+	    :fringe-bitmap 'flycheck-fringe-bitmap-ball
+	    :fringe-face 'flycheck-fringe-info))
 
-	    (use-package editorconfig
-	      :config
-	      (editorconfig-mode 1))
+	(use-package flycheck-rust
+	  :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+	  )
 
+	(use-package flycheck-clang-tidy
+	  :config '(add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
+
+#+end_src
+
+Rust setup
+
+#+begin_src emacs-lisp
+
+	(use-package rust-mode :disabled)
+
+	(use-package rustic
+	  :after (rust-mode)
+	  :mode ("\\.rs\\'" . rustic-mode)
+	  :bind
+	  ("C-c C-c" . rustic-compile)
+	  :config
+	  (setq indent-tabs-mode nil)
+	  (setq rustic-format-on-save t)
+	  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+	  (setq rustic-flycheck-clippy-params "--message-format=json")
+	  (add-to-list 'company-backends
+		       '(company-rust :with company-capf))
+	  :commands rustic-mode
+	  )
+
+	(use-package cargo
+	  :hook (rustic-mode . cargo-minor-mode)
+	  :diminish cargo-minor-mode)
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package smartparens
+	  :config
+	  (add-hook 'prog-mode-hook 'smartparens-mode))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+Colorise colors as text with their value.
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :hook
+    (help-mode . rainbow-mode)
+    (prog-mode . rainbow-mode)
+    :custom
+    (rainbow-x-colors nil))
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package org
+	  :init
+	  (org-babel-do-load-languages
+	   'org-babel-load-languages
+	   '(
+	     (emacs-lisp . t)
+	     (org . t)
+	     (shell . t)
+	     (C . t)
+	     (python . t)
+	     (css . t)
+	     (ocaml . t)
+	     (latex . t)
+	     (dot . t)
+	     (ditaa . t)
+	     (makefile . t)
+	     (processing .t)
+	     (sql . t)
+	     (sqlite . t)
+	     ))
+
+	  :config
+	  (setq org-src-fontify-natively t)
+	  (setq org-src-tab-acts-natively t)
+	  (setq org-directory "~/kDrive/dropbox/org/")
+	  )
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package dap-mode)
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package yasnippet)
+
+	(with-eval-after-load 'lsp-mode
+	  (require 'dap-cpptools)
+	  (yas-global-mode))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(setq gc-cons-threshold (* 100 1024 1024)
+	      read-process-output-max (* 1024 1024)
+	      treemacs-space-between-root-nodes nil
+	      company-idle-delay 0.0
+	      company-minimum-prefix-length 2
+	      lsp-idle-delay 1)  ;; clangd is fast
+
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+
+	(use-package multiple-cursors
+	  :config
+	  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+	  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+	  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+	  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package unicode-fonts
+	  :ensure t
+	  :config
+	  (unicode-fonts-setup))
+
+	;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+	(set-fontset-font t 'symbol "Apple Color Emoji")
+	(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+	(set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+	(set-fontset-font t 'symbol "Symbola" nil 'append)
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(use-package svg-tag-mode)
+
+	(defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+	(defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
+	(defconst day-re "[A-Za-z]\\{3\\}")
+
+	(defun svg-progress-percent (value)
+	  (svg-image (svg-lib-concat
+		      (svg-lib-progress-bar (/ (string-to-number value) 100.0)
+					    nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+		      (svg-lib-tag (concat value "%")
+				   nil :stroke 0 :margin 0)) :ascent 'center))
+
+	(defun svg-progress-count (value)
+	  (let* ((seq (mapcar #'string-to-number (split-string value "/")))
+		 (count (float (car seq)))
+		 (total (float (cadr seq))))
+	    (svg-image (svg-lib-concat
+			(svg-lib-progress-bar (/ count total) nil
+					      :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+			(svg-lib-tag value nil
+				     :stroke 0 :margin 0)) :ascent 'center)))
+
+	(setq svg-tag-tags
+	      `(
+		;; Org tags
+		(":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag))))
+		(":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
+
+		;; Task priority
+		("\\[#[A-Z]\\]" . ( (lambda (tag)
+				      (svg-tag-make tag :face 'org-priority
+						    :beg 2 :end -1 :margin 0))))
+
+		;; Progress
+		("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+						    (svg-progress-percent (substring tag 1 -2)))))
+		("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+						  (svg-progress-count (substring tag 1 -1)))))
+
+		;; TODO / DONE
+		("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'org-todo :inverse t :margin 0))))
+		("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done :margin 0))))
+
+
+		;; Citation of the form [cite:@Knuth:1984]
+		("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+						  (svg-tag-make tag
+								:inverse t
+								:beg 7 :end -1
+								:crop-right t))))
+		("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+							   (svg-tag-make tag
+									 :end -1
+									 :crop-left t))))
+
+
+		;; Active date (without day name, with or without time)
+		(,(format "\\(<%s>\\)" date-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+		(,(format "\\(<%s *\\)%s>" date-re time-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+		(,(format "<%s *\\(%s>\\)" date-re time-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+
+		;; Inactive date  (without day name, with or without time)
+		(,(format "\\(\\[%s\\]\\)" date-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+		(,(format "\\(\\[%s *\\)%s\\]" date-re time-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
+		(,(format "\\[%s *\\(%s\\]\\)" date-re time-re) .
+		 ((lambda (tag)
+		    (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))))
+
+	(svg-tag-mode t)
+
+	;; To do:         TODO DONE
+	;; Tags:          :TAG1:TAG2:TAG3:
+	;; Priorities:    [#A] [#B] [#C]
+	;; Progress:      [1/3]
+	;;                [42%]
+	;; Active date:   <2021-12-24>
+	;;                <2021-12-24 14:00>
+	;; Inactive date: [2021-12-24]
+	;;                [2021-12-24 14:00]
+	;; Citation:      [cite:@Knuth:1984]
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+	(setq-default show-trailing-whitespace t)
+
+#+end_src
+
+  #+begin_src emacs-lisp
+
+    (use-package highlight-indent-guides
+      :hook
+       (python-mode . highlight-indent-guides-mode)
+       (scss-mode . highlight-indent-guides-mode)
+       :custom
+       (highlight-indent-guides-method 'column))
+#+end_src
+
+
+#+begin_src emacs-lisp
+
+    (use-package paradox
+    :config
+    (paradox-enable)
+    )
+
+#+end_src
+
+
+TODO: Explain editor config?
+
+https://editorconfig.org/
+Apply settings from .editconfig files if they exist
+
+#+begin_src emacs-lisp
+    (use-package editorconfig
+      :ensure t
+      :config
+      (editorconfig-mode 1))
   #+end_src
-  
-#+begin_src emacs-lisp (setq lsp-tex-server 'digestif) #+end_src 
+
+  #+begin_src emacs-lisp
+(setq lsp-tex-server 'digestif)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq confirm-kill-emacs #'yes-or-no-p)
+(setq window-resize-pixelwise t)
+(setq frame-resize-pixelwise t)
+(save-place-mode t)
+(savehist-mode t)
+(recentf-mode t)
+
+(setq vc-follow-symlinks t)
+#+end_src
+
