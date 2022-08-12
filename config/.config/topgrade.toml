@@ -34,6 +34,8 @@ no_retry = true
 # Cleanup temporary or old files
 #cleanup = true
 
+notify_each_step = false
+
 [git]
 # max_concurrency = 5
 # Additional git repositories to pull
@@ -41,13 +43,15 @@ repos = [
 "~/gits/algorithm-archive",
 "~/gits/moderncv",
 "~/gits/YACHT",
+"~/.dotfiles",
+"~/Documents/papers-we-love"
 ]
 
 # Don't pull the predefined git repos
 #predefined_repos = false
 
 # Arguments to pass Git when pulling Repositories
-#arguments = "--rebase --autostash"
+arguments = "--rebase --autostash"
 
 #[composer]
 #self_update = true
@@ -57,8 +61,9 @@ repos = [
 #"Emacs Snapshot" = "rm -rf ~/.emacs.d/elpa.bak && cp -rl ~/.emacs.d/elpa ~/.emacs.d/elpa.bak"
 
 # Custom commands
-#[commands]
+[commands]
 #"Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
+"Exercism upgrade" = "exercism upgrade"
 
 #[brew]
 #greedy_cask = true
