@@ -3,6 +3,16 @@
 # Please adapt and uncomment the following lines:
 	name = Dimitri Belopopsky
 	email = dimitri@belopopsky.com
+
+# Per-platform settings
+[includeIf "gitdir:/Users"]
+    path = ~/.gitconfig-macos
+[includeIf "gitdir:C:"]
+    path = ~/.gitconfig-windows
+[includeIf "gitdir:/home"]
+    path = ~/.gitconfig-linux
+
+
 [pull]
 	rebase = true
 [init]
@@ -22,5 +32,18 @@
 
 [interactive]
     diffFilter = delta --color-only
+
 [color]
 	ui = auto
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+
+# Private work specific settings
+# This file will give overrides where needed
+[include]
+	path = ~/.gitconfig-work
