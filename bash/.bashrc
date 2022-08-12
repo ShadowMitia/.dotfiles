@@ -16,8 +16,10 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+export HISTSIZE=-1
+export HISTFILESIZE=-1
+# Change history location to avoid some sessions to truncate history by mistake
+export HISTFILE=~/.bash_eternal_history
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -210,11 +212,6 @@ function cleanup
     echo "=== Done cleaning ===";
 }
 
-function update_rust_analyzer {
-    curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o ~/.local/bin/rust-analyzer
-    chmod +x ~/.local/bin/rust-analyzer
-}
-
 # alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 alias cat="bat"
 # Banish all evil!
@@ -223,3 +220,7 @@ alias vi="emacs"
 
  # oh my posh
 eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
+
+
+[[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitty +kitten ssh"
+[[ "$TERM" == "xterm-kitty" ]] && alias icat="kitty +kitten icat"
