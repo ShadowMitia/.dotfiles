@@ -34,7 +34,8 @@ echo "Stowing apps for user: $user"
 
 # install apps available to local users and root
 for app in "${base[@]}"; do
-    stowit "${HOME}" "$app"
+echo "$app"
+    stowit "$HOME" "$app"
 done
 
 # install only user space folders
@@ -50,6 +51,8 @@ done
 # Emacs powerlevel10k install
 # git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
+exit 0
+
 # You might need to reset .zshrc for changes to be made
 # Set ZSH_THEME="powerlevel10k/powerlevel10k" in .zshrc if not done
 
@@ -62,8 +65,8 @@ rm ~/.poshthemes/themes.zip
 
 echo ""
 echo "##### ALL DONE"
-if [ -f /usr/local/bin/oh-my-posh ]; do
+if [ -f "/usr/local/bin/oh-my-posh" ]; then
     echo "Install oh-my-posh with"
     echo "sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh"
     echo "sudo chmod +x /usr/local/bin/oh-my-posh"
-done
+fi

@@ -218,8 +218,10 @@ alias cat="bat"
 alias vim="emacs"
 alias vi="emacs"
 
- # oh my posh
-eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
+# oh my posh
+if [ -f oh-my-posh ]; then
+    eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
+fi
 
 
 [[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitty +kitten ssh"
