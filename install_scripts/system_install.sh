@@ -65,7 +65,6 @@ apt install apt-transport-https \
             shellcheck \
             linux-tools-common linux-tools-generic linux-tools-`uname -r` \
             kcachegrind perf \
-            zola \
             gamemode \
             transmission-gtk \
             fzf gnuplot \
@@ -79,7 +78,8 @@ sudo -u "$real_user" flatpak install flathub com.spotify.Client \
                                            com.mojang.Minecraft \
                                            com.obsproject.Studio \
                                            com.visualstudio.code \
-                                           com.leinardi.gwe
+                                           com.leinardi.gwe \
+					   md.obsidian.Obsidian
 
 # Install cargo and Rust
 sudo -u "$real_user" curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo -u "$real_user" sh
