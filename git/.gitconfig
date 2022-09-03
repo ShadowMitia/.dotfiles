@@ -47,3 +47,6 @@
 # This file will give overrides where needed
 [include]
 	path = ~/.gitconfig-work
+[alias]
+	praise = blame
+	who = blame
