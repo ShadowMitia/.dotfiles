@@ -118,6 +118,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if command -v yt-dlp &> /dev/null; then
+
 function dla
 {
     if [ -z $1 ]
@@ -153,6 +155,8 @@ function dl
       yt-dlp --downloader aria2c -c --add-metadata --embed-thumbnail --embed-subs --all-subs -i --prefer-free-formats -o '~/Videos/Downloads/%(title)s.%(ext)s'  --download-archive ~/Videos/Downloads/archive.txt $1
     fi
 }
+fi
+
 
 # the fuck : https://github.com/nvbn/thefuck
 if command -v thefuck &> /dev/null
@@ -213,13 +217,16 @@ function cleanup
 }
 
 # alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-alias cat="bat"
-# Banish all evil!
-alias vim="emacs"
-alias vi="emacs"
+command -v bat &> /dev/null && alias cat="bat"
+
+if command -v emacs &> /dev/null; then
+    # Banish all evil!
+    alias vim="emacs"
+    alias vi="emacs"
+fi
 
 # oh my posh
-if [ -f oh-my-posh ]; then
+if command -v oh-my-posh &> /dev/null; then
     eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
 fi
 
