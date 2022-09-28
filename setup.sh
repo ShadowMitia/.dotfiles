@@ -70,3 +70,7 @@ if [ -f "/usr/local/bin/oh-my-posh" ]; then
     echo "sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh"
     echo "sudo chmod +x /usr/local/bin/oh-my-posh"
 fi
+
+
+# To install bash insulter
+# wget -O ~/bin/bash.command-not-found https://raw.githubusercontent.com/hkbakke/bash-insulter/master/src/bash.command-not-found
