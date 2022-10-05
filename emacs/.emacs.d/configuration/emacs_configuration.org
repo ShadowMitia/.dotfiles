@@ -222,7 +222,15 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (editorconfig-mode 1))
 #+end_src
 
+** Display 80 columns limit
+
+#+begin_src elisp
+  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+  (add-hook 'rst-mode-hook #'display-fill-column-indicator-mode)
+#+end_src
+
 * Programming languages
+
 
 ** C++
 
