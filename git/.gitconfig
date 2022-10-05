@@ -1,4 +1,10 @@
 # This is Git's per-user configuration file.
+[core]
+	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
+	# [default] trailing-space: looks for spaces at the end of a line
+	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+
 [user]
 # Please adapt and uncomment the following lines:
 	name = Dimitri Belopopsky
@@ -42,11 +48,13 @@
 	process = git-lfs filter-process
 	required = true
 
+[alias]
+	praise = blame
+	who = blame
+	# Amend the currently staged files to the latest commit.
+	amend = commit --amend --reuse-message=HEAD
 
 # Private work specific settings
 # This file will give overrides where needed
 [include]
 	path = ~/.gitconfig-work
-[alias]
-	praise = blame
-	who = blame
