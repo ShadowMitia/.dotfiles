@@ -53,6 +53,8 @@
 	who = blame
 	# Amend the currently staged files to the latest commit.
 	amend = commit --amend --reuse-message=HEAD
+  # Show path to git root
+  root = rev-parse --show-toplevel
 
 # Private work specific settings
 # This file will give overrides where needed

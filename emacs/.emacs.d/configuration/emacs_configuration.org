@@ -111,7 +111,6 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 :config (nano-modeline-mode))
 #+end_src
 
-
 * Packages
 
 ** Version control systems
@@ -243,3 +242,59 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 #+end_src
 
 ** Python
+   
+
+* Things in testing
+
+#+begin_src elisp
+  (use-package company-coq)
+  (use-package proof-general
+  :hook (coq-mode . #'company-coq-mode)
+  )
+
+  ;; This disables bidirectional text to prevent "trojan source"
+  ;; exploits, see https://www.trojansource.codes/
+  (setf (default-value 'bidi-display-reordering) nil)
+
+  ;; ws-butler cleans up whitespace only on the lines you've edited,
+  ;; keeping messy colleagues happy ;-) Important that it doesn't clean
+  ;; the whitespace on currrent line, otherwise, eclim leaves messy
+  ;; code behind.
+  (use-package ws-butler
+    :init
+    (setq ws-butler-keep-whitespace-before-point nil)
+    :config
+    (ws-butler-global-mode))
+
+  (global-auto-revert-mode 1)
+  (setq revert-without-query (list "\\.png$" "\\.svg$")
+	auto-revert-verbose nil)
+
+  ;; (use-package company
+  ;;   :init
+  ;;   (setq company-idle-delay 0.0
+  ;;         company-global-modes '(not org-mode slack-mode)
+  ;;         company-minimum-prefix-length 1)
+
+  ;;   (global-company-mode 1)
+  ;;   (global-set-key (kbd "<C-return>") 'company-complete)
+  ;;   (use-package company-emoji)
+  ;;   (add-to-list 'company-backends 'company-emoji)
+  ;;   (add-to-list 'company-backends 'company-files)
+  ;;   )
+
+
+use-package python
+  :config
+  (setq python-indent 4)
+  )
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))
+
+
+
+#+end_src

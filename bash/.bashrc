@@ -127,6 +127,8 @@ function dla
   echo 'Usage: dla "URL"'
     else
   yt-dlp --downloader aria2c --add-metadata --write-all-thumbnails --embed-thumbnail --write-info-json --embed-subs --all-subs -i --prefer-free-formats -o '~/Music/Downloads/%(title)s.%(ext)s'  --download-archive ~/Music/Downloads/archive.txt  --extract-audio $1
+
+
     fi
 }
 
@@ -238,10 +240,19 @@ fi
 [[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitty +kitten ssh"
 [[ "$TERM" == "xterm-kitty" ]] && alias icat="kitty +kitten icat"
 
-
-
 # Keep last, apply local only, non-synched settings.
 if [ -f .bashrc-local ]; then
      . .bashrc-local
 fi
 
+if [ -d "$HOME/.nvm" ]; then
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
+
+# fnm
+if [ -d "$HOME/.fnm" ]; then
+	export PATH="$HOME/.fnm":$PATH
+	eval "`fnm env`"
+fi
