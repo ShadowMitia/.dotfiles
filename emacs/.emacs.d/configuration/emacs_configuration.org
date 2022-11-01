@@ -1,4 +1,4 @@
-#+title: Emacs configuration
+#+title: ShadowMitia's emacs configuration
 #+PROPERTY: header-args :tangle yes
 
 * Package management
@@ -27,88 +27,151 @@
 ** straight.el setup
 
 #+begin_src elisp
-;; Boostrap `straight.el`
-(defvar bootstrap-version)
-(let ((bootstrap-file
-  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
 
-(bootstrap-version 5))
+  (setq-default straight-use-package-by-default t)
 
-(unless (file-exists-p bootstrap-file)
-  (with-current-buffer
-  (url-retrieve-synchronously
-  "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-  'silent 'inhibit-cookies)
-  
-  (goto-char (point-max))
-  (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-  
-(straight-use-package 'use-package) ;; Install use-package
+    ;; Boostrap `straight.el`
+	(defvar bootstrap-version)
+	(let ((bootstrap-file
+	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
 
-(setq use-package-always-ensure t)
+	(bootstrap-version 5))
+
+	(unless (file-exists-p bootstrap-file)
+	  (with-current-buffer
+	  (url-retrieve-synchronously
+	  "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	  'silent 'inhibit-cookies)
+
+	  (goto-char (point-max))
+	  (eval-print-last-sexp)))
+	  (load bootstrap-file nil 'nomessage))
+
+	(straight-use-package 'use-package) ;; Install use-package
 #+end_src
 
-* Global settings
+
+** Show matching parenthesis
 
 #+begin_src elisp
-(setq-default
-auto-save-list-file-prefix nil         ; Prevent tracking for auto-saves
-cursor-in-non-selected-windows nil     ; Hide the cursor in inactive windows
-delete-by-moving-to-trash t            ; Delete files to trash
-fill-column 80                         ; Set width for automatic line breaks
-gc-cons-threshold (* 100 1024 1024)    ; We're not using Game Boys anymore
-inhibit-startup-screen t               ; Disable start-up screen
-initial-scratch-message ""             ; Empty the initial *scratch* buffer
-mouse-yank-at-point t                  ; Yank at point rather than pointer
-native-comp-async-report-warnings-errors 'silent ; Skip compilation error buffers
-read-process-output-max (* 1024 1024)  ; Increase read size per process
-scroll-conservatively 101              ; Avoid recentering when scrolling far
-scroll-margin 2                        ; Add a margin when scrolling vertically
-select-enable-clipboard t              ; Merge system's and Emacs' clipboard
-sentence-end-double-space nil          ; Use a single space after dots
-show-help-function nil                 ; Disable help text everywhere
-tab-always-indent 'complete            ; Indent first then try completions
-use-short-answers t                    ; Replace yes/no prompts with y/n
-window-combination-resize t            ; Resize windows proportionally
-x-stretch-cursor t)                    ; Stretch cursor to the glyph width
+(use-package paren
+:config
+(set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
+  (show-paren-mode 1))
 #+end_src
 
+** remove whitespace
+
+#+begin_src elisp
+  (use-package ws-butler
+  :hook (text-mode prog-mode))
+#+end_src
+
+
+  ,**
+
+  ,#+begin_src elisp
+    (setq gc-cons-threshold (* 100 1024 1024)
+	  large-file-warning-threshold nil
+	  vc-follow-symlinks t
+	  )
+#+end_src
+
+** Keep emacs clean!
+
+Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-Tips-Cleaning.org
+
+#+begin_src elisp
+  (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+
+  ;; auto-save-mode doesn't create the path automatically!
+  (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
+
+  (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
+	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+
+(use-package no-littering)
+#+end_src
+
+** Modernify
+
+TODO: CUA mode?
 
 #+begin_src elisp
 (delete-selection-mode 1)               ; Replace region when inserting text
 #+end_src
 
+
+* Theme
+
+
 #+begin_src elisp
-(set-default-coding-systems 'utf-8)     ; Default to utf-8 encoding
+  ;; NANO splash
+  (straight-use-package
+   '(nano-splash :type git :host github :repo "rougier/nano-splash"))
+
+  ;; NANO theme
+  (straight-use-package
+   '(nano-theme :type git :host github :repo "rougier/nano-theme"))
+
+  ;; NANO modeline
+  (straight-use-package
+   '(nano-modeline :type git :host github :repo "rougier/nano-modeline"))
+
+  ;; NANO agenda
+  (straight-use-package
+   '(nano-agenda :type git :host github :repo "rougier/nano-agenda"))
+
+  ;; NANO agenda
+  (straight-use-package
+   '(minibuffer-header :type git :host github :repo "rougier/minibuffer-header"))
+
+  ;; SVG tags, progress bars & icons
+  (straight-use-package
+   '(svg-lib :type git :host github :repo "rougier/svg-lib"))
+
+  ;; Replace keywords with SVG tags
+  (straight-use-package
+   '(svg-tag-mode :type git :host github :repo "rougier/svg-tag-mode"))
+
+  ;; Relative date formatting
+  (straight-use-package
+   '(relative-date :type git :host github :repo "rougier/relative-date"))
+
+  (require 'nano-theme)
+  (setq nano-fonts-use nil) ; Use theme font stack
+  (nano-dark)            ; Use theme dark version
+  (nano-mode)             ; Recommended settings
+  (nano-modeline-mode)
+
+  (setq nano-modeline-prefix 'status)
+  (setq nano-modeline-prefix-padding 1)
+
+  (require 'nano-splash)
+
 #+end_src
 
 * GUI modifications
 
+
+Disable splash screen
+
 #+begin_src elisp
+(setq inhibit-startup-message t) ; Don't show splash screen
+#+end_src
 
-(menu-bar-mode -1)
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
+Turn off unneeded UI elements
 
+Note: menu-bar-mode is recommended to keep for beginners!
+
+#+begin_src elisp
+  ;;(menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
 #+end_src
 
 #+begin_src elisp
 (setq-default show-trailing-whitespace t)
-#+end_src
-
-** Theme
-
-#+begin_src elisp
-(use-package nano-theme
-:ensure t
-:config
-(nano-mode)
-(nano-dark)
-)
-
-(use-package nano-modeline
-:config (nano-modeline-mode))
 #+end_src
 
 * Packages
@@ -116,80 +179,133 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 ** Version control systems
 
 #+begin_src elisp
-(use-package magit
-:ensure t
-:bind ("C-x g" . magit-status))
+  (use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
+
+  (use-package magit-todos)
 #+end_src
 
-
-** Autcompletion
-
-
-
-#+begin_src elisp
-
-(use-package lsp-mode
-:hook ((prog-mode . lsp))
-:config
-(setq lsp-completion-provider :capf)
-(setq lsp-completion-enable t)
-(setq  lsp-lens-enable t)
-(setq read-process-output-max (* 2048 4096))
-(setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
-:commands lsp
-)
-
-(use-package lsp-ui :commands lsp-ui-mode)
-#+end_src
 
 *** Language Server Protocol
 
-#+begin_src elisp
-(use-package lsp-mode
-  :ensure
-  :commands lsp
-  :custom
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.1)
-  
-;; Rust specific
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-proc-macro-enable t)
-
-
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-(use-package lsp-ui
-  :ensure
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
-#+end_src
-
-*** Company
+From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
 
 #+begin_src elisp
   (use-package company
-:ensure t
-  :custom
-  (company-idle-delay 0.0)
-  (company-minimum-prefix-length 1)
-  :config
-  (global-company-mode t)	
-  )
+    :ensure
+    :custom
+    (company-idle-delay 0.0) ;; how long to wait until popup
+    ;; (company-begin-commands nil) ;; uncomment to disable popup
+    :bind
+    (:map company-active-map
+	  ("C-n". company-select-next)
+	  ("C-p". company-select-previous)
+	  ("M-<". company-select-first)
+	  ("M->". company-select-last)))
+
 
   (use-package company-box
-  :hook (company-mode . company-box-mode)
-  :custom
-  (company-box-max-candidates 50)
-  (company-box-show-single-candidate 'always))
+    :hook (company-mode . company-box-mode)
+    :custom
+    (company-box-max-candidates 50)
+    (company-box-show-single-candidate 'always))
 
+
+  (use-package yasnippet
+    :ensure
+    :config
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook 'yas-minor-mode)
+    (add-hook 'text-mode-hook 'yas-minor-mode))
+
+  (use-package lsp-treemacs)
+
+  (use-package lsp-mode
+    :ensure
+    :commands lsp
+    :custom
+    ;;
+    (lsp-completion-provider :capf)
+    (lsp-completion-enable t)
+    (lsp-lens-enable t)
+    (read-process-output-max (* 2048 4096))
+
+    ;; C/C++
+    (lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
+    ;; elisp
+    (lsp-eldoc-render-all t)
+    ;; common
+    (company-minimum-prefix-length 1)
+    (lsp-idle-delay 0.0)
+    ;; Rust
+    (lsp-rust-analyzer-cargo-watch-command "clippy")
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    ;; enable / disable the hints as you prefer:
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    ;; (lsp-rust-analyzer-display-chaining-hints t)
+    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
+    ;; (lsp-rust-analyzer-display-parameter-hints nil)
+    ;; (lsp-rust-analyzer-display-reborrow-hints nil)
+    (lsp-rust-analyzer-display-chaining-hints t)
+    (lsp-rust-analyzer-display-closure-return-type-hints t)
+    (lsp-rust-analyzer-proc-macro-enable t)
+    ;; :config
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (with-eval-after-load 'lsp-mode
+    ;; :global/:workspace/:file
+    (setq lsp-modeline-diagnostics-scope :workspace))
+
+  (lsp-modeline-code-actions-mode)
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode)
+
+
+  (use-package lsp-ui
+    :ensure
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil)
+    (lsp-ui-sideline-show-diagnostics t)
+    (lsp-ui-sideline-update-mode 'line)
+    (lsp-ui-sideline-delay 0.0)
+    :bind
+    (:map lsp-ui-mode-map
+	  ("M-.". #'lsp-ui-peek-find-definitions)
+	  ("M-?". #'lsp-ui-peek-find-references)
+	  )
+    )
+#+end_src
+
+* Flycheck
+
+Install shellcheck for better shell linting
+
+#+begin_src elisp
+    (use-package flycheck :ensure)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (setq flycheck-shellcheck-follow-sources t)
+
+  (use-package flycheck-rust)
+#+end_src
+
+
+* Rust lang
+
+#+begin_src elisp
+  (use-package rustic)
+  (use-package cargo)
+#+end_src
+
+* YAML
+
+#+begin_src elisp
+(use-package yaml-mode)
 #+end_src
 
 ** Colours
@@ -200,6 +316,39 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 (setq rainbow-x-colors nil)
 (add-hook 'prog-mode-hook 'rainbow-mode))
 #+end_src
+
+** Hightlight some keywords
+
+From https://writequit.org/org/
+
+TODO: make colour match Nano theme
+
+#+begin_src elisp
+(defun my/add-watchwords ()
+  "Highlight FIXME, TODO, and NOCOMMIT in code TODO"
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIXME:?\\|TODO:?\\|NOCOMMIT:?\\)\\>"
+          1 '((:foreground "#d7a3ad") (:weight bold)) t))))
+
+(add-hook 'prog-mode-hook #'my/add-watchwords)
+#+end_src
+
+** UTF-8
+
+#+begin_src elisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+#+end_src
+
+** Git fringe
+
+#+begin_src elips
+
+#+end_src
+
 
 ** Multiple cursors
 
@@ -216,9 +365,9 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 ** Editorconfig
 
 #+begin_src elisp
-(use-package editorconfig
-:config
-(editorconfig-mode 1))
+  (use-package editorconfig
+    :config
+    (editorconfig-mode 1))
 #+end_src
 
 ** Display 80 columns limit
@@ -228,10 +377,21 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
   (add-hook 'rst-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 
-* Programming languages
+
+** Automatically refresh buffers when files are updated!
+
+#+begin_src elisp
+  (global-auto-revert-mode 1)
+  (setq global-auto-revert-non-file-buffers t)
+#+end_src
+
+
+* Programming
 
 
 ** C++
+
+LSP will ask to install clangd.
 
 ** Rust
 
@@ -242,49 +402,10 @@ x-stretch-cursor t)                    ; Stretch cursor to the glyph width
 #+end_src
 
 ** Python
-   
-
-* Things in testing
 
 #+begin_src elisp
-  (use-package company-coq)
-  (use-package proof-general
-  :hook (coq-mode . #'company-coq-mode)
-  )
-
-  ;; This disables bidirectional text to prevent "trojan source"
-  ;; exploits, see https://www.trojansource.codes/
-  (setf (default-value 'bidi-display-reordering) nil)
-
-  ;; ws-butler cleans up whitespace only on the lines you've edited,
-  ;; keeping messy colleagues happy ;-) Important that it doesn't clean
-  ;; the whitespace on currrent line, otherwise, eclim leaves messy
-  ;; code behind.
-  (use-package ws-butler
-    :init
-    (setq ws-butler-keep-whitespace-before-point nil)
-    :config
-    (ws-butler-global-mode))
-
-  (global-auto-revert-mode 1)
-  (setq revert-without-query (list "\\.png$" "\\.svg$")
-	auto-revert-verbose nil)
-
-  ;; (use-package company
-  ;;   :init
-  ;;   (setq company-idle-delay 0.0
-  ;;         company-global-modes '(not org-mode slack-mode)
-  ;;         company-minimum-prefix-length 1)
-
-  ;;   (global-company-mode 1)
-  ;;   (global-set-key (kbd "<C-return>") 'company-complete)
-  ;;   (use-package company-emoji)
-  ;;   (add-to-list 'company-backends 'company-emoji)
-  ;;   (add-to-list 'company-backends 'company-files)
-  ;;   )
-
-
-use-package python
+  
+(use-package python
   :config
   (setq python-indent 4)
   )
@@ -298,3 +419,25 @@ use-package python
 
 
 #+end_src
+
+
+
+** Projectile
+
+#+begin_src elisp
+(use-package projectile :diminish projectile)
+#+end_src
+
+* Org-mode
+
+TODO
+
+
+* References
+
+Emacs manual and tutorial
+https://www.masteringemacs.org
+https://systemcrafters.net/videos/
+https://github.com/daviwil/emacs-from-scratch
+https://github.com/rougier/dotemacs/blob/master/dotemacs.org
+https://writequit.org/org/
