@@ -199,10 +199,10 @@ From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
     ;; (company-begin-commands nil) ;; uncomment to disable popup
     :bind
     (:map company-active-map
-	  ("C-n". company-select-next)
-	  ("C-p". company-select-previous)
-	  ("M-<". company-select-first)
-	  ("M->". company-select-last)))
+          ("C-n". company-select-next)
+          ("C-p". company-select-previous)
+          ("M-<". company-select-first)
+          ("M->". company-select-last)))
 
 
   (use-package company-box
@@ -253,7 +253,10 @@ From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
     (lsp-rust-analyzer-display-closure-return-type-hints t)
     (lsp-rust-analyzer-proc-macro-enable t)
     ;; :config
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+    ;; keybind
+    (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+    )
 
   (with-eval-after-load 'lsp-mode
     ;; :global/:workspace/:file
@@ -276,9 +279,9 @@ From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
     (lsp-ui-sideline-delay 0.0)
     :bind
     (:map lsp-ui-mode-map
-	  ("M-.". #'lsp-ui-peek-find-definitions)
-	  ("M-?". #'lsp-ui-peek-find-references)
-	  )
+          ("M-.". #'lsp-ui-peek-find-definitions)
+          ("M-?". #'lsp-ui-peek-find-references)
+          )
     )
 #+end_src
 
@@ -287,11 +290,17 @@ From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
 Install shellcheck for better shell linting
 
 #+begin_src elisp
-    (use-package flycheck :ensure)
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  (setq flycheck-shellcheck-follow-sources t)
 
-  (use-package flycheck-rust)
+
+  (use-package flycheck
+    :ensure
+    :hook ((flycheck-mode . flymake-mode-off))
+    :config
+    (global-flycheck-mode)
+    (setq flycheck-shellcheck-follow-sources t)
+    (use-package flycheck-rust)
+    (push 'rustic-clippy flycheck-checkers)
+    )
 #+end_src
 
 
@@ -404,7 +413,7 @@ LSP will ask to install clangd.
 ** Python
 
 #+begin_src elisp
-  
+
 (use-package python
   :config
   (setq python-indent 4)
