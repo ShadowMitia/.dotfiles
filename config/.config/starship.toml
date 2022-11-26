@@ -1,0 +1,99 @@
+# Nord theme
+# - Polar Night #2e3440 #3b4252 #434c5e #4c566a
+# - Snow Storm #d8dee9 #e5e9f0 #eceff4
+# - Frost #8fbcbb #88c0d0 #81a1c1 #5e81ca
+# - Aurora #bf616a #d08770 #ebcb8b #a3be8c #b48ead
+
+# [palette.nord]
+# nord0 = "#2e3440"
+# nord1 = "#3b4252"
+# nord2 = "#434c5e"
+# nord3 = "#4c566a"
+# nord4 = "#d8dee9"
+# nord5 = "#e5e9f0"
+# nord6 = "#eceff4"
+# nord7 = "#8fbcbb"
+# nord8 = "#88c0d0"
+# nord9 = "#81a1c1"
+# nord10 = "#5e81ca"
+# nord11 = "#bf616a"
+# nord12 = "#d08770"
+# nord13 = "#ebcb8b"
+# nord14 = "#a3be8c"
+# nord15 = "#b48ead"
+
+format = """
+$username\
+[](bg:#81a1c1 fg:#8fbcbb)\
+$directory\
+[](fg:#81a1c1 bg:#b48ead)\
+$git_branch\
+$git_status\
+[](fg:#b48ead)\
+$line_break\
+$status\
+$cmd_duration\
+$jobs$character
+"""
+
+continuation_prompt = "▶▶"
+
+[username]
+show_always = true
+style_user = "bg:#8fbcbb fg:#2e3440"
+style_root = "bg:#bf616a fg:#2e3440"
+format = '[$user ]($style)'
+
+[directory]
+style = "bg:#81a1c1 fg:#2e3440"
+format = "[ $path ]($style)"
+truncation_length = 4
+truncation_symbol = "…/"
+
+[directory.substitutions]
+# "~" = "🏠"
+"Documents" = " "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+# Keep in mind that the order matters. For example:
+# "Important Documents" = "  "
+# will not be replaced, because "Documents" was already substituted before.
+# So either put "Important Documents" before "Documents" or use the substituted version:
+# "Important  " = "  "
+
+[git_branch]
+symbol = ""
+style = "bg:#b48ead fg:#2e3440"
+format = '[ $symbol $branch]($style)'
+truncation_symbol = ""
+
+# [git_status]
+# style = "bg:#b48ead fg:#2e3440"
+# ahead = "stuff to push!"
+# diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+# behind = "missing ${count}"
+# modified = '\(changes\)'
+# stashed = '\(has stash\)'
+# staged = '\(staged $count\)'
+# format = '[ $all_status $ahead_behind]($style)'
+# up_to_date = "up-to-date"
+
+[git_status]
+style = "bg:#b48ead fg:#2e3440"
+format = '[ $all_status $ahead_behind]($style)'
+# ahead = "⇡${count}"
+# diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+# behind = "⇣${count}"
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+cherry_pick = "[🍒 PICKING](bold red)"
+
+[cmd_duration]
+min_time = 500
+format = '\[[⏱ $duration]($style)\]'
+
+[character]
+success_symbol = "[❯](#a3be8c)"
+error_symbol = "[❯]( #bf616a)"

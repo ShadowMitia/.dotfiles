@@ -256,3 +256,6 @@ if [ -d "$HOME/.fnm" ]; then
 	export PATH="$HOME/.fnm":$PATH
 	eval "`fnm env`"
 fi
+
+
+eval "$(starship init bash)"
