@@ -6,21 +6,21 @@
 ** Package archives
 
 #+begin_src elisp
-(setq-default package-archives
-'(("elpa" . "https://elpa.gnu.org/packages/")
-("melpa" . "https://melpa.org/packages/"))
-)
+  (setq-default package-archives
+                '(("elpa" . "https://elpa.gnu.org/packages/")
+                  ("melpa" . "https://melpa.org/packages/"))
+                )
 #+end_src
 
 ** Init package if version is less than 27
 
 #+begin_src elisp
-(when (< emacs-major-version 27)
-  (require 'package)
-  (package-initialize))
+  (when (< emacs-major-version 27)
+    (require 'package)
+    (package-initialize))
 
-(when (>= emacs-major-version 27)
-  (setq package-enable-at-startup nil))
+  (when (>= emacs-major-version 27)
+    (setq package-enable-at-startup nil))
 #+end_src
 
 
@@ -28,23 +28,26 @@
 
 #+begin_src elisp
 
+  ;; https://www.reddit.com/r/emacs/comments/mtb05k/emacs_init_time_decreased_65_after_i_realized_the/
+  (setq straight-check-for-modifications '(check-on-save find-when-checking))
+
   (setq-default straight-use-package-by-default t)
 
-    ;; Boostrap `straight.el`
+  ;; Boostrap `straight.el`
   (defvar bootstrap-version)
   (let ((bootstrap-file
-    (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
 
-  (bootstrap-version 5))
+        (bootstrap-version 5))
 
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-    (url-retrieve-synchronously
-    "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-    'silent 'inhibit-cookies)
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
 
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
   (straight-use-package 'use-package) ;; Install use-package
@@ -55,9 +58,9 @@
 
 #+begin_src elisp
   (setq gc-cons-threshold (* 100 1024 1024)
-  large-file-warning-threshold nil
-  vc-follow-symlinks t
-  )
+        large-file-warning-threshold nil
+        vc-follow-symlinks t
+        )
 #+end_src
 
 ** Modernify
@@ -65,7 +68,7 @@
 TODO: CUA mode?
 
 #+begin_src elisp
-(delete-selection-mode 1)               ; Replace region when inserting text
+  (delete-selection-mode 1)               ; Replace region when inserting text
 #+end_src
 
 
@@ -124,7 +127,7 @@ TODO: CUA mode?
 Disable splash screen
 
 #+begin_src elisp
-(setq inhibit-startup-message t) ; Don't show splash screen
+  (setq inhibit-startup-message t) ; Don't show splash screen
 #+end_src
 
 Turn off unneeded UI elements
@@ -138,7 +141,7 @@ Note: menu-bar-mode is recommended to keep for beginners!
 #+end_src
 
 #+begin_src elisp
-(setq-default show-trailing-whitespace t)
+  (setq-default show-trailing-whitespace t)
 #+end_src
 
 * Packages
@@ -154,9 +157,9 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
   (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
 
   (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
-  auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+        auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
 
-(use-package no-littering)
+  (use-package no-littering)
 #+end_src
 
 
@@ -164,17 +167,17 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 ** Show matching parenthesis
 
 #+begin_src elisp
-(use-package paren
-:config
-(set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
-  (show-paren-mode 1))
+  (use-package paren
+    :config
+    (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
+    (show-paren-mode 1))
 #+end_src
 
 ** remove whitespace
 
 #+begin_src elisp
   (use-package ws-butler
-  :hook (text-mode prog-mode))
+    :hook (text-mode prog-mode))
 #+end_src
 
 
@@ -183,110 +186,261 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 #+begin_src elisp
   (use-package magit
-  :ensure t
-  :bind ("C-x g" . magit-status))
+    :ensure t
+    :bind ("C-x g" . magit-status))
 
   (use-package magit-todos)
 #+end_src
 
 
-*** Language Server Protocol
-
-From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode
+* Tree-sitter
 
 #+begin_src elisp
-  (use-package company
-    :ensure
+
+  ;; tree-sitter is part of core from emacs 29
+  (when (< emacs-major-version 29)
+
+    (use-package tree-sitter
+      )
+
+    (use-package tree-sitter-langs)
+    )
+
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
+  (require 'tree-sitter)
+  (require 'tree-sitter-langs)
+
+#+end_src
+
+* Language Server Protocol
+
+~~ From https://robert.kra.hn/posts/rust-emacs-setup/#lsp-mode-and-lsp-ui-mode ~~
+
+#+begin_src elisp
+
+    (use-package yasnippet
+      :ensure
+      :config
+      (yas-reload-all)
+      (add-hook 'prog-mode-hook 'yas-minor-mode)
+      (add-hook 'text-mode-hook 'yas-minor-mode)
+      (yas-global-mode t))
+
+    (use-package yasnippet-snippets)
+
+    ;; (setq lsp-keymap-prefix "C-c l")
+
+    ;; (use-package lsp-mode
+    ;;   :ensure
+    ;;   :commands lsp
+    ;;   :init
+    ;;   :custom
+    ;;   ;;
+    ;;   (lsp-completion-provider :capf)
+    ;;   (lsp-completion-show-detail t)
+    ;;   (lsp-completion-enable t)
+    ;;   (lsp-lens-enable t)
+    ;;   (read-process-output-max (* 2048 4096))
+    ;;   (create-lockfiles nil)
+
+    ;;   ;; C/C++
+    ;;   (lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
+    ;;   ;; elisp
+    ;;   (lsp-eldoc-render-all t)
+    ;;   ;; common
+    ;;   (company-minimum-prefix-length 1)
+    ;;   (lsp-idle-delay 0.0)
+    ;;   ;; Rust
+    ;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+    ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+    ;;   ;; enable / disable the hints as you prefer:
+    ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+    ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    ;;   ;; (lsp-rust-analyzer-display-chaining-hints t)
+    ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    ;;   ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
+    ;;   ;; (lsp-rust-analyzer-display-parameter-hints nil)
+    ;;   ;; (lsp-rust-analyzer-display-reborrow-hints nil)
+    ;;   (lsp-rust-analyzer-display-chaining-hints t)
+    ;;   (lsp-rust-analyzer-display-closure-return-type-hints t)
+    ;;   (lsp-rust-analyzer-proc-macro-enable t)
+    ;;   ;; :config
+    ;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+    ;;   (add-hook 'lsp-mode-hook 'lsp-enable-which-key-integration)
+
+    ;;   ;; keybind
+    ;;   :bind-keymap
+    ;;   ("C-c l" . lsp-command-map)
+    ;;   )
+
+
+    ;; (with-eval-after-load 'lsp-mode
+    ;;   ;; :global/:workspace/:file
+    ;;   (setq lsp-modeline-diagnostics-scope :workspace))
+
+    ;; (lsp-modeline-code-actions-mode)
+    ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    ;; (lsp-headerline-breadcrumb-mode)
+
+
+    ;; (use-package lsp-ui
+    ;;   :ensure
+    ;;   :commands lsp-ui-mode
+    ;;   :custom
+    ;;   ;; (lsp-ui-peek-always-show t)
+    ;;   ;; (lsp-ui-sideline-show-hover t)
+    ;;   ;; (lsp-ui-doc-enable t)
+    ;;   ;; (lsp-ui-sideline-show-diagnostics t)
+    ;;   ;; (lsp-ui-sideline-update-mode 'line)
+    ;;   ;; (lsp-ui-sideline-delay 0.0)
+
+    ;;   (setq lsp-ui-doc-enable t
+    ;;         lsp-ui-doc-delay 0.5
+    ;;         lsp-ui-doc-show-with-mouse t
+    ;;         lsp-ui-doc-show-with-cursor t
+    ;;         lsp-ui-doc-header t
+    ;;         lsp-ui-doc-include-signature t
+    ;;         lsp-ui-doc-alignment 'window
+    ;;         lsp-ui-doc-max-height 30)
+    ;;   ;; Gestion de la sideline
+    ;;   (setq lsp-ui-sideline-delay 0.2
+    ;;         lsp-ui-sideline-show-diagnostics t
+    ;;         lsp-ui-sideline-show-hover t
+    ;;         lsp-ui-sideline-show-code-actions t
+    ;;         lsp-ui-sideline-update-mode 'line)
+    ;;   :bind
+    ;;   (:map lsp-ui-mode-map
+    ;;         ("M-.". #'lsp-ui-peek-find-definitions)
+    ;;         ("M-?". #'lsp-ui-peek-find-references)
+    ;;         )
+    ;;   )
+
+
+    ;; (use-package lsp-treemacs   :init
+    ;;   (lsp-treemacs-sync-mode 1))
+
+
+    (use-package eglot
+      :after yasnippet
+      :hook (
+             (prog-mode . eglot-ensure)
+             ;; (rust-mode . eglot-ensure)
+             ;; (python-mode . eglot-ensure)
+             ;; (c-mode . eglot-ensure)
+             ;; (c++-mode . eglot-ensure)
+             ;; (java-mode . eglot-ensure)
+             ;; (sh-lode . eglot-ensure)
+             )
+      :custom
+      ((eglot-autoshutdown t))
+      )
+
+
+
+    ;; (use-package company
+    ;;   :after eglot
+    ;;   :ensure
+    ;;   :hook (eglot-managed-mode . company-mode)
+    ;;   :custom
+    ;;   (company-idle-delay 0.0) ;; how long to wait until popup
+    ;;   ;; (company-begin-commands nil) ;; uncomment to disable popup
+    ;;   :bind
+    ;;   (:map company-active-map
+    ;;         ("C-n". company-select-next)
+    ;;         ("C-p". company-select-previous)
+    ;;         ("M-<". company-select-first)
+    ;;         ("M->". company-select-last)
+    ;;         )
+    ;;   )
+
+    ;; ;;   (add-hook 'eglot-managed
+    ;; -mode-hook (lambda ()
+    ;;                                    (add-to-list 'company-backends
+    ;;                                                 '(company-capf :with company-yasnippet))))
+
+
+
+    ;; (use-package company-box
+    ;;   :hook (company-mode . company-box-mode)
+    ;;   :custom
+    ;;   (company-box-max-candidates 50)
+    ;;   (company-box-show-single-candidate 'always)
+    ;;   )
+
+    ;; From https://github.com/minad/corfu#installation-and-configuration
+    ;; TODO: try orderless https://github.com/oantolin/orderless
+    (use-package corfu
+      ;; Optional customizations
+      :custom
+      ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+      (corfu-auto t)                 ;; Enable auto completion
+      ;; (corfu-separator ?\s)          ;; Orderless field separator
+      ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+      (corfu-quit-no-match 'separator)      ;; Never quit, even if there is no match
+      ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+      ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+      ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+      ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+      (corfu-auto-delay 0)
+      (corfu-auto-prefix 0)
+      (completion-styles '(basic))
+      :bind
+      (:map corfu-map
+            ("TAB" . corfu-next)
+            ([tab] . corfu-next)
+            ("S-TAB" . corfu-previous)
+            ([backtab] . corfu-previous))
+      :init
+      (global-corfu-mode))
+
+    ;; A few more useful configurations...
+    (use-package emacs
+      :init
+      ;; TAB cycle if there are only few candidates
+      (setq completion-cycle-threshold 3)
+
+      ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+      ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+      ;; (setq read-extended-command-predicate
+      ;;       #'command-completion-default-include-p)
+
+      ;; Enable indentation+completion using the TAB key.
+      ;; `completion-at-point' is often bound to M-TAB.
+      (setq tab-always-indent 'complete))
+
+
+    (use-package kind-icon
+    :after corfu
     :custom
-    (company-idle-delay 0.0) ;; how long to wait until popup
-    ;; (company-begin-commands nil) ;; uncomment to disable popup
-    :bind
-    (:map company-active-map
-          ("C-n". company-select-next)
-          ("C-p". company-select-previous)
-          ("M-<". company-select-first)
-          ("M->". company-select-last)))
-
-
-
-  (use-package company-box
-    :hook (company-mode . company-box-mode)
-    :custom
-    (company-box-max-candidates 50)
-    (company-box-show-single-candidate 'always))
-
-
-  (use-package yasnippet
-    :ensure
+    (kind-icon-use-icons t)
+    (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+    (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
+    (kind-icon-blend-frac 0.08)
     :config
-    (yas-reload-all)
-    (add-hook 'prog-mode-hook 'yas-minor-mode)
-    (add-hook 'text-mode-hook 'yas-minor-mode))
-
-  (use-package lsp-treemacs)
-
-  (use-package lsp-mode
-    :ensure
-    :commands lsp
-    :custom
-    ;;
-    (lsp-completion-provider :capf)
-    (lsp-completion-enable t)
-    (lsp-lens-enable t)
-    (read-process-output-max (* 2048 4096))
-
-    ;; C/C++
-    (lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
-    ;; elisp
-    (lsp-eldoc-render-all t)
-    ;; common
-    (company-minimum-prefix-length 1)
-    (lsp-idle-delay 0.0)
-    ;; Rust
-    (lsp-rust-analyzer-cargo-watch-command "clippy")
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    ;; enable / disable the hints as you prefer:
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    ;; (lsp-rust-analyzer-display-chaining-hints t)
-    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-    ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
-    ;; (lsp-rust-analyzer-display-parameter-hints nil)
-    ;; (lsp-rust-analyzer-display-reborrow-hints nil)
-    (lsp-rust-analyzer-display-chaining-hints t)
-    (lsp-rust-analyzer-display-closure-return-type-hints t)
-    (lsp-rust-analyzer-proc-macro-enable t)
-    ;; :config
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-    ;; keybind
-    (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
   )
 
-  (with-eval-after-load 'lsp-mode
-    ;; :global/:workspace/:file
-    (setq lsp-modeline-diagnostics-scope :workspace))
+#+end_src
 
-  (lsp-modeline-code-actions-mode)
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode)
+* TRAMP
 
+#+begin_src elisp
+  ;; (use-package tramp
+  ;;   :config
+  ;;   (setq enable-remote-dir-locals t)
+  ;;   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  ;;   )
+#+end_src
 
-  (use-package lsp-ui
-    :ensure
-    :commands lsp-ui-mode
-    :custom
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-show-hover t)
-    (lsp-ui-doc-enable nil)
-    (lsp-ui-sideline-show-diagnostics t)
-    (lsp-ui-sideline-update-mode 'line)
-    (lsp-ui-sideline-delay 0.0)
-    :bind
-    (:map lsp-ui-mode-map
-          ("M-.". #'lsp-ui-peek-find-definitions)
-          ("M-?". #'lsp-ui-peek-find-references)
-          )
-  )
+* Flymake
+
+#+begin_src elisp
+  (use-package flymake)
+
+  (use-package flymake-collection
+    :hook (after-init . flymake-collection-hook-setup))
 #+end_src
 
 * Flycheck
@@ -296,38 +450,67 @@ Install shellcheck for better shell linting
 #+begin_src elisp
 
 
-  (use-package flycheck
-    :ensure
-    :hook ((flycheck-mode . flymake-mode-off))
-    :config
-    (global-flycheck-mode)
-    (setq flycheck-shellcheck-follow-sources t)
-    (use-package flycheck-rust)
-    (push 'rustic-clippy flycheck-checkers)
-    )
+  ;; (use-package flycheck
+  ;;   :ensure
+  ;;   :hook ((flycheck-mode . flymake-mode-off))
+  ;;   :config
+  ;;   (global-flycheck-mode)
+  ;;   (setq flycheck-shellcheck-follow-sources t)
+  ;;   (use-package flycheck-rust)
+  ;;   (push 'rustic-clippy flycheck-checkers)
+  ;;   )
 #+end_src
-
 
 * Rust lang
 
 #+begin_src elisp
+
+  (setq rustic-lsp-client 'eglot)
   (use-package rustic)
-  (use-package cargo)
 #+end_src
 
 * YAML
 
 #+begin_src elisp
-(use-package yaml-mode)
+  (use-package yaml-mode)
 #+end_src
 
 ** Colours
 
 #+begin_src elisp
-(use-package rainbow-mode
-:config
-(setq rainbow-x-colors nil)
-(add-hook 'prog-mode-hook 'rainbow-mode))
+  (use-package rainbow-mode
+    :config
+    (setq rainbow-x-colors nil)
+
+    ;; TODO: rgb_linear and rgba_linear
+    ;; TODO: see if it is possible to add transparency support?
+    (defvar
+      rainbow-custom-keywords
+      '(
+        ("Color::rgb(\s*\\([0-9]\\{1,3\\}\\(?:\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*,\s*\\([0-9]\\{1,3\\}\\(?:\\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*,\s*\\([0-9]\\{1,3\\}\\(?:\\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*)"
+         (0 (rainbow-colorize-rgb)))
+        ("Color::rgba(\s*\\([0-9]\\{1,3\\}\\(?:\\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*,\s*\\([0-9]\\{1,3\\}\\(?:\\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*,\s*\\([0-9]\\{1,3\\}\\(?:\\.[0-9]\\)?\\(?:\s*%\\)?\\)\s*,\s*[0-9]*\.?[0-9]+\s*%?\s*)"
+         (0 (rainbow-colorize-rgb)))
+        ("Color::hsl(\s*\\([0-9]\\{1,3\\}\\)\s*,\s*\\([0-9]\\{1,3\\}\\)\s*%\s*,\s*\\([0-9]\\{1,3\\}\\)\s*%\s*)"
+         (0 (rainbow-colorize-hsl)))
+        ("Color::hsla(\s*\\([0-9]\\{1,3\\}\\)\s*,\s*\\([0-9]\\{1,3\\}\\)\s*%\s*,\s*\\([0-9]\\{1,3\\}\\)\s*%\s*,\s*[0-9]*\.?[0-9]+\s*%?\s*)"
+         (0 (rainbow-colorize-hsl)))
+        ("Color::hex(\\\"\\([0-9A-Fa-f]\\{3,8\\}\\)\\\")"
+         (1 (rainbow-colorize-hexadecimal-without-sharp 1))))
+      "Font-lock keywords to add for custom matching.")
+
+    (add-hook 'rainbow-keywords-hook (lambda () (if (eq rainbow-mode t)
+                                                    (font-lock-add-keywords
+                                                     nil
+                                                     rainbow-custom-keywords
+                                                     t)
+                                                  (font-lock-remove-keywords
+                                                   nil
+                                                   rainbow-custom-keywords)
+                                                  )))
+
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+
 #+end_src
 
 ** Hightlight some keywords
@@ -362,25 +545,108 @@ TODO: make colour match Nano theme
 
 #+begin_src elips
 
+
+  (use-package git-gutter-fringe
+    :straight (git-gutter-fringe :type git :host github :repo "emacsorphanage/git-gutter-fringe")
+    :diminish 'git-gutter-mode
+    :config (global-git-gutter-mode 't)
+    (setq git-gutter:modified-sign "Δ"
+	  git-gutter:added-sign "+"
+	  git-gutter:deleted-sign "-"))
+
+
 #+end_src
 
 
 ** Multiple cursors
 
 #+begin_src elisp
-(use-package multiple-cursors
-:config
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+  (use-package multiple-cursors
+    :config
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 #+end_src
+
+** Treemacs
+
+Config from https://medspx.fr/blog/Debian/emacs_2020/
+
+
+#+begin_src elisp
+
+    (use-package treemacs-all-the-icons)
+    (use-package all-the-icons-dired :hook (dired-mode . all-the-icons-dired-mode))
+    (use-package all-the-icons-completion
+      :init (all-the-icons-completion-mode))
+
+    (use-package treemacs
+      :after (treemacs-all-the-icons)
+      :hook (treemacs-mode . no_code_mode)
+      :config
+      (treemacs-resize-icons 14)
+      (treemacs-follow-mode t)
+      (treemacs-tag-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (treemacs-hide-gitignored-files-mode nil)
+      (treemacs-load-theme "all-the-icons")
+      )
+
+    (use-package treemacs-magit
+      :after (treemacs magit)
+      :ensure t
+      )
+#+end_src
+
+
+** Minimap
+
+#+begin_src elisp
+  (use-package minimap
+    :diminish minimap-mode
+    :init
+    (setq minimap-window-location 'right
+          minimap-width-fraction 0.04
+          minimap-hide-scroll-bar nil
+          minimap-hide-fringes nil
+          minimap-dedicated-window t
+          minimap-minimum-width 15)
+    :custom-face
+    (minimap-font-face ((t (:height 13 :weight bold :width condensed
+                                    :spacing dual-width :family "VT323"))))
+    (minimap-active-region-background ((t (:extend t :background "gray24"))))
+    )
+#+end_src
+
+** CSV
+
+#+begin_src elisp
+
+
+  (use-package csv-mode :straight t
+    ;; Always enter CSV mode in align mode; makes it easier to read.
+    :hook (csv-mode . csv-align-mode))
+
+
+#+end_src
+
+** Ripgrep
+
+
+#+begin_src elisp
+  (use-package rg
+    :config (rg-enable-menu))
+#+end_src
+
 
 
 ** Editorconfig
 
 #+begin_src elisp
   (use-package editorconfig
+    :diminish editorconfig-mode
     :config
     (editorconfig-mode 1))
 #+end_src
@@ -400,7 +666,6 @@ TODO: make colour match Nano theme
   (setq global-auto-revert-non-file-buffers t)
 #+end_src
 
-
 * Programming
 
 
@@ -408,28 +673,20 @@ TODO: make colour match Nano theme
 
 LSP will ask to install clangd.
 
-** Rust
-
-#+begin_src elisp
-(use-package rustic
-  :config
-  (setq rustic-format-on-save t))
-#+end_src
-
 ** Python
 
 #+begin_src elisp
 
-(use-package python
-  :config
-  (setq python-indent 4)
-  )
+  (use-package python
+    :config
+    (setq python-indent 4)
+    )
 
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))
+  ;; (use-package lsp-pyright
+  ;;   :ensure t
+  ;;   :hook (python-mode . (lambda ()
+  ;;                          (require 'lsp-pyright)
+  ;;                          (lsp))))
 
 
 
@@ -440,13 +697,113 @@ LSP will ask to install clangd.
 ** Projectile
 
 #+begin_src elisp
-(use-package projectile :diminish projectile)
+  (use-package projectile
+    :diminish projectile
+    :config   (progn
+                (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+                (projectile-mode +1)
+                (setq projectile-completion-system 'default)
+                (setq projectile-enable-caching t)
+                (setq projectile-indexing-method 'alien)
+                (add-to-list 'projectile-globally-ignored-files "node_modules")
+                (add-to-list 'projectile-globally-ignored-files ".cache")
+                (add-to-list 'projectile-globally-ignored-files "_cache")
+                )
+    )
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :custom
+    (treemacs-project-follow-mode 1)
+    )
+
+
+
 #+end_src
 
 * Org-mode
 
 TODO
 
+* Which-key
+
+
+#+begin_src elisp
+  (use-package which-key
+    :custom
+    (which-key-mode t)
+    )
+#+end_src
+
+
+* Docker
+
+#+begin_src elisp
+  (use-package dockerfile-mode
+    :mode ("Dockerfile\\'" . dockerfile-mode))
+#+end_src
+
+
+* Mastodon
+
+#+begin_src elisp
+  (use-package mastodon
+    :config
+    (setq mastodon-instance-url "https://mastodon.social")
+    (setq mastodon-active-user "shadowmitia")
+    )
+#+end_src
+
+
+*
+
+
+From https://github.com/Atman50/emacs-config
+
+"When a file is opened and it is determined there is no mode (fundamental-mode) this code reads the first line of the file looking for an appropriate shebang for either python or bash and sets the mode for the file."
+
+#+begin_src elisp
+
+  (cl-defun my-find-file-hook ()
+    "If `fundamental-mode', look for script type so the mode gets properly set.
+  Script-type is read from #!/... at top of file."
+    (if (eq major-mode 'fundamental-mode)
+        (ignore-errors
+          (save-excursion
+            (goto-char (point-min))
+            (re-search-forward "^#!\s*/.*/\\(python\\|bash\\|sh\\).*$")
+            (if (string= (match-string 1) "python")
+                (python-mode)
+              (sh-mode))))))
+  (add-hook 'find-file-hook #'my-find-file-hook)
+#+end_src
+
+
+* Centaur tabs
+
+https://github.com/ema2159/centaur-tabs
+
+Investigate?
+
+* Random
+
+#+begin_src elisp
+  (setq fill-column 80)
+
+  (use-package all-the-icons
+    :ensure t
+    )
+
+  ;; don't interrupt me with native compilation warnings
+  (setq native-comp-async-report-warnings-errors nil)
+
+#+end_src
+
+* Random perf configs
+
+#+begin_src elisp
+  (setq auto-window-vscroll nil) ;; https://emacs.stackexchange.com/questions/28736/emacs-pointcursor-movement-lag/28746
+#+end_src
 
 * References
 
@@ -456,3 +813,7 @@ https://systemcrafters.net/videos/
 https://github.com/daviwil/emacs-from-scratch
 https://github.com/rougier/dotemacs/blob/master/dotemacs.org
 https://writequit.org/org/
+https://medspx.fr/blog/Debian/emacs_2020/
+https://sachachua.com/dotemacs/index.html
+https://codeberg.org/takeonrules/dotemacs/src/branch/main/emacs.d/configuration.orghttps://kristofferbalintona.me/posts/202202270056/
+https://kristofferbalintona.me/posts/202202270056/
