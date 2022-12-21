@@ -386,6 +386,10 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
       (corfu-auto-delay 0)
       (corfu-auto-prefix 0)
       (completion-styles '(basic))
+      (corfu-popupinfo-delay 0)
+      (corfu-popupinfo-max-height 30)
+      :straight (corfu :files (:defaults "extensions/*")
+                       :includes (corfu-info corfu-history))
       :bind
       (:map corfu-map
             ("TAB" . corfu-next)
@@ -393,7 +397,8 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
             ("S-TAB" . corfu-previous)
             ([backtab] . corfu-previous))
       :init
-      (global-corfu-mode))
+      (global-corfu-mode)
+      (corfu-popupinfo-mode))
 
     ;; A few more useful configurations...
     (use-package emacs
