@@ -220,212 +220,212 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 #+begin_src elisp
 
-    (use-package yasnippet
-      :ensure
-      :config
-      (yas-reload-all)
-      (add-hook 'prog-mode-hook 'yas-minor-mode)
-      (add-hook 'text-mode-hook 'yas-minor-mode)
-      (yas-global-mode t))
+          (use-package yasnippet
+            :ensure
+            :config
+            (yas-reload-all)
+            (add-hook 'prog-mode-hook 'yas-minor-mode)
+            (add-hook 'text-mode-hook 'yas-minor-mode)
+            (yas-global-mode t))
 
-    (use-package yasnippet-snippets)
+          (use-package yasnippet-snippets)
 
-    ;; (setq lsp-keymap-prefix "C-c l")
+          ;; (setq lsp-keymap-prefix "C-c l")
 
-    ;; (use-package lsp-mode
-    ;;   :ensure
-    ;;   :commands lsp
-    ;;   :init
-    ;;   :custom
-    ;;   ;;
-    ;;   (lsp-completion-provider :capf)
-    ;;   (lsp-completion-show-detail t)
-    ;;   (lsp-completion-enable t)
-    ;;   (lsp-lens-enable t)
-    ;;   (read-process-output-max (* 2048 4096))
-    ;;   (create-lockfiles nil)
+          ;; (use-package lsp-mode
+          ;;   :ensure
+          ;;   :commands lsp
+          ;;   :init
+          ;;   :custom
+          ;;   ;;
+          ;;   (lsp-completion-provider :capf)
+          ;;   (lsp-completion-show-detail t)
+          ;;   (lsp-completion-enable t)
+          ;;   (lsp-lens-enable t)
+          ;;   (read-process-output-max (* 2048 4096))
+          ;;   (create-lockfiles nil)
 
-    ;;   ;; C/C++
-    ;;   (lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
-    ;;   ;; elisp
-    ;;   (lsp-eldoc-render-all t)
-    ;;   ;; common
-    ;;   (company-minimum-prefix-length 1)
-    ;;   (lsp-idle-delay 0.0)
-    ;;   ;; Rust
-    ;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
-    ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
-    ;;   ;; enable / disable the hints as you prefer:
-    ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
-    ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    ;;   ;; (lsp-rust-analyzer-display-chaining-hints t)
-    ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-    ;;   ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
-    ;;   ;; (lsp-rust-analyzer-display-parameter-hints nil)
-    ;;   ;; (lsp-rust-analyzer-display-reborrow-hints nil)
-    ;;   (lsp-rust-analyzer-display-chaining-hints t)
-    ;;   (lsp-rust-analyzer-display-closure-return-type-hints t)
-    ;;   (lsp-rust-analyzer-proc-macro-enable t)
-    ;;   ;; :config
-    ;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-    ;;   (add-hook 'lsp-mode-hook 'lsp-enable-which-key-integration)
+          ;;   ;; C/C++
+          ;;   (lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion=never"))
+          ;;   ;; elisp
+          ;;   (lsp-eldoc-render-all t)
+          ;;   ;; common
+          ;;   (company-minimum-prefix-length 1)
+          ;;   (lsp-idle-delay 0.0)
+          ;;   ;; Rust
+          ;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+          ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+          ;;   ;; enable / disable the hints as you prefer:
+          ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+          ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+          ;;   ;; (lsp-rust-analyzer-display-chaining-hints t)
+          ;;   ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+          ;;   ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
+          ;;   ;; (lsp-rust-analyzer-display-parameter-hints nil)
+          ;;   ;; (lsp-rust-analyzer-display-reborrow-hints nil)
+          ;;   (lsp-rust-analyzer-display-chaining-hints t)
+          ;;   (lsp-rust-analyzer-display-closure-return-type-hints t)
+          ;;   (lsp-rust-analyzer-proc-macro-enable t)
+          ;;   ;; :config
+          ;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+          ;;   (add-hook 'lsp-mode-hook 'lsp-enable-which-key-integration)
 
-    ;;   ;; keybind
-    ;;   :bind-keymap
-    ;;   ("C-c l" . lsp-command-map)
-    ;;   )
-
-
-    ;; (with-eval-after-load 'lsp-mode
-    ;;   ;; :global/:workspace/:file
-    ;;   (setq lsp-modeline-diagnostics-scope :workspace))
-
-    ;; (lsp-modeline-code-actions-mode)
-    ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    ;; (lsp-headerline-breadcrumb-mode)
+          ;;   ;; keybind
+          ;;   :bind-keymap
+          ;;   ("C-c l" . lsp-command-map)
+          ;;   )
 
 
-    ;; (use-package lsp-ui
-    ;;   :ensure
-    ;;   :commands lsp-ui-mode
-    ;;   :custom
-    ;;   ;; (lsp-ui-peek-always-show t)
-    ;;   ;; (lsp-ui-sideline-show-hover t)
-    ;;   ;; (lsp-ui-doc-enable t)
-    ;;   ;; (lsp-ui-sideline-show-diagnostics t)
-    ;;   ;; (lsp-ui-sideline-update-mode 'line)
-    ;;   ;; (lsp-ui-sideline-delay 0.0)
+          ;; (with-eval-after-load 'lsp-mode
+          ;;   ;; :global/:workspace/:file
+          ;;   (setq lsp-modeline-diagnostics-scope :workspace))
 
-    ;;   (setq lsp-ui-doc-enable t
-    ;;         lsp-ui-doc-delay 0.5
-    ;;         lsp-ui-doc-show-with-mouse t
-    ;;         lsp-ui-doc-show-with-cursor t
-    ;;         lsp-ui-doc-header t
-    ;;         lsp-ui-doc-include-signature t
-    ;;         lsp-ui-doc-alignment 'window
-    ;;         lsp-ui-doc-max-height 30)
-    ;;   ;; Gestion de la sideline
-    ;;   (setq lsp-ui-sideline-delay 0.2
-    ;;         lsp-ui-sideline-show-diagnostics t
-    ;;         lsp-ui-sideline-show-hover t
-    ;;         lsp-ui-sideline-show-code-actions t
-    ;;         lsp-ui-sideline-update-mode 'line)
-    ;;   :bind
-    ;;   (:map lsp-ui-mode-map
-    ;;         ("M-.". #'lsp-ui-peek-find-definitions)
-    ;;         ("M-?". #'lsp-ui-peek-find-references)
-    ;;         )
-    ;;   )
+          ;; (lsp-modeline-code-actions-mode)
+          ;; (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+          ;; (lsp-headerline-breadcrumb-mode)
 
 
-    ;; (use-package lsp-treemacs   :init
-    ;;   (lsp-treemacs-sync-mode 1))
+          ;; (use-package lsp-ui
+          ;;   :ensure
+          ;;   :commands lsp-ui-mode
+          ;;   :custom
+          ;;   ;; (lsp-ui-peek-always-show t)
+          ;;   ;; (lsp-ui-sideline-show-hover t)
+          ;;   ;; (lsp-ui-doc-enable t)
+          ;;   ;; (lsp-ui-sideline-show-diagnostics t)
+          ;;   ;; (lsp-ui-sideline-update-mode 'line)
+          ;;   ;; (lsp-ui-sideline-delay 0.0)
+
+          ;;   (setq lsp-ui-doc-enable t
+          ;;         lsp-ui-doc-delay 0.5
+          ;;         lsp-ui-doc-show-with-mouse t
+          ;;         lsp-ui-doc-show-with-cursor t
+          ;;         lsp-ui-doc-header t
+          ;;         lsp-ui-doc-include-signature t
+          ;;         lsp-ui-doc-alignment 'window
+          ;;         lsp-ui-doc-max-height 30)
+          ;;   ;; Gestion de la sideline
+          ;;   (setq lsp-ui-sideline-delay 0.2
+          ;;         lsp-ui-sideline-show-diagnostics t
+          ;;         lsp-ui-sideline-show-hover t
+          ;;         lsp-ui-sideline-show-code-actions t
+          ;;         lsp-ui-sideline-update-mode 'line)
+          ;;   :bind
+          ;;   (:map lsp-ui-mode-map
+          ;;         ("M-.". #'lsp-ui-peek-find-definitions)
+          ;;         ("M-?". #'lsp-ui-peek-find-references)
+          ;;         )
+          ;;   )
 
 
-    (use-package eglot
-      :after yasnippet
-      :hook (
-             (prog-mode . eglot-ensure)
-             ;; (rust-mode . eglot-ensure)
-             ;; (python-mode . eglot-ensure)
-             ;; (c-mode . eglot-ensure)
-             ;; (c++-mode . eglot-ensure)
-             ;; (java-mode . eglot-ensure)
-             ;; (sh-lode . eglot-ensure)
-             )
-      :custom
-      ((eglot-autoshutdown t))
-      )
+          ;; (use-package lsp-treemacs   :init
+          ;;   (lsp-treemacs-sync-mode 1))
 
 
-
-    ;; (use-package company
-    ;;   :after eglot
-    ;;   :ensure
-    ;;   :hook (eglot-managed-mode . company-mode)
-    ;;   :custom
-    ;;   (company-idle-delay 0.0) ;; how long to wait until popup
-    ;;   ;; (company-begin-commands nil) ;; uncomment to disable popup
-    ;;   :bind
-    ;;   (:map company-active-map
-    ;;         ("C-n". company-select-next)
-    ;;         ("C-p". company-select-previous)
-    ;;         ("M-<". company-select-first)
-    ;;         ("M->". company-select-last)
-    ;;         )
-    ;;   )
-
-    ;; ;;   (add-hook 'eglot-managed
-    ;; -mode-hook (lambda ()
-    ;;                                    (add-to-list 'company-backends
-    ;;                                                 '(company-capf :with company-yasnippet))))
+          (use-package eglot
+            :after yasnippet
+            :hook (
+                   (prog-mode . eglot-ensure)
+                   ;; (rust-mode . eglot-ensure)
+                   ;; (python-mode . eglot-ensure)
+                   ;; (c-mode . eglot-ensure)
+                   ;; (c++-mode . eglot-ensure)
+                   ;; (java-mode . eglot-ensure)
+                   ;; (sh-lode . eglot-ensure)
+                   )
+            :custom
+            ((eglot-autoshutdown t))
+            )
 
 
 
-    ;; (use-package company-box
-    ;;   :hook (company-mode . company-box-mode)
-    ;;   :custom
-    ;;   (company-box-max-candidates 50)
-    ;;   (company-box-show-single-candidate 'always)
-    ;;   )
+          ;; (use-package company
+          ;;   :after eglot
+          ;;   :ensure
+          ;;   :hook (eglot-managed-mode . company-mode)
+          ;;   :custom
+          ;;   (company-idle-delay 0.0) ;; how long to wait until popup
+          ;;   ;; (company-begin-commands nil) ;; uncomment to disable popup
+          ;;   :bind
+          ;;   (:map company-active-map
+          ;;         ("C-n". company-select-next)
+          ;;         ("C-p". company-select-previous)
+          ;;         ("M-<". company-select-first)
+          ;;         ("M->". company-select-last)
+          ;;         )
+          ;;   )
 
-    ;; From https://github.com/minad/corfu#installation-and-configuration
-    ;; TODO: try orderless https://github.com/oantolin/orderless
-    (use-package corfu
-      ;; Optional customizations
-      :custom
-      ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-      (corfu-auto t)                 ;; Enable auto completion
-      ;; (corfu-separator ?\s)          ;; Orderless field separator
-      ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-      (corfu-quit-no-match 'separator)      ;; Never quit, even if there is no match
-      ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-      ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-      ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-      ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-      (corfu-auto-delay 0)
-      (corfu-auto-prefix 0)
-      (completion-styles '(basic))
-      (corfu-popupinfo-delay 0)
-      (corfu-popupinfo-max-height 30)
-      :straight (corfu :files (:defaults "extensions/*")
-                       :includes (corfu-info corfu-history))
-      :bind
-      (:map corfu-map
-            ("TAB" . corfu-next)
-            ([tab] . corfu-next)
-            ("S-TAB" . corfu-previous)
-            ([backtab] . corfu-previous))
-      :init
-      (global-corfu-mode)
-      (corfu-popupinfo-mode))
-
-    ;; A few more useful configurations...
-    (use-package emacs
-      :init
-      ;; TAB cycle if there are only few candidates
-      (setq completion-cycle-threshold 3)
-
-      ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-      ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-      ;; (setq read-extended-command-predicate
-      ;;       #'command-completion-default-include-p)
-
-      ;; Enable indentation+completion using the TAB key.
-      ;; `completion-at-point' is often bound to M-TAB.
-      (setq tab-always-indent 'complete))
+          ;; ;;   (add-hook 'eglot-managed
+          ;; -mode-hook (lambda ()
+          ;;                                    (add-to-list 'company-backends
+          ;;                                                 '(company-capf :with company-yasnippet))))
 
 
-    (use-package kind-icon
-    :after corfu
-    :custom
-    (kind-icon-use-icons t)
-    (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
-    (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
-    (kind-icon-blend-frac 0.08)
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
-  )
+
+          ;; (use-package company-box
+          ;;   :hook (company-mode . company-box-mode)
+          ;;   :custom
+          ;;   (company-box-max-candidates 50)
+          ;;   (company-box-show-single-candidate 'always)
+          ;;   )
+
+          ;; From https://github.com/minad/corfu#installation-and-configuration
+          ;; TODO: try orderless https://github.com/oantolin/orderless
+          (use-package corfu
+            ;; Optional customizations
+            :custom
+            ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+            (corfu-auto t)                 ;; Enable auto completion
+            ;; (corfu-separator ?\s)          ;; Orderless field separator
+            ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+            (corfu-quit-no-match 'separator)      ;; Never quit, even if there is no match
+            ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+            ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+            ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+            ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+            (corfu-auto-delay 0)
+            (corfu-auto-prefix 0)
+            (completion-styles '(basic))
+            (corfu-popupinfo-delay 0)
+            (corfu-popupinfo-max-height 30)
+            :straight (corfu :files (:defaults "extensions/*")
+                             :includes (corfu-info corfu-history))
+            :bind
+            (:map corfu-map
+                  ("TAB" . corfu-next)
+                  ([tab] . corfu-next)
+                  ("S-TAB" . corfu-previous)
+                  ([backtab] . corfu-previous))
+            :init
+            (global-corfu-mode)
+            (corfu-popupinfo-mode))
+
+          ;; A few more useful configurations...
+          (use-package emacs
+            :init
+            ;; TAB cycle if there are only few candidates
+            (setq completion-cycle-threshold 3)
+
+            ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+            ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+            ;; (setq read-extended-command-predicate
+            ;;       #'command-completion-default-include-p)
+
+            ;; Enable indentation+completion using the TAB key.
+            ;; `completion-at-point' is often bound to M-TAB.
+            (setq tab-always-indent 'complete))
+
+
+          (use-package kind-icon
+          :after corfu
+          :custom
+          (kind-icon-use-icons t)
+          (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
+          (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
+          (kind-icon-blend-frac 0.08)
+          :config
+          (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+        )
 
 #+end_src
 
