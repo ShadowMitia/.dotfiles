@@ -202,18 +202,13 @@ fi
 #    eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
 #fi
 
-if [ -f ~/bin/bash.command-not-found ]; then
-    . ~/bin/bash.command-not-found
-fi
+# if [ -f ~/bin/bash.command-not-found ]; then
+#     . ~/bin/bash.command-not-found
+# fi
 
 
 [[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitty +kitten ssh"
 [[ "$TERM" == "xterm-kitty" ]] && alias icat="kitty +kitten icat"
-
-# Keep last, apply local only, non-synched settings.
-if [ -f .bashrc-local ]; then
-     . .bashrc-local
-fi
 
 if [ -d "$HOME/.nvm" ]; then
 	export NVM_DIR="$HOME/.nvm"
@@ -229,3 +224,8 @@ fi
 
 
 eval "$(starship init bash)"
+
+# Keep last, apply local only, non-synced settings.
+if [ -f ~/.bashrc-local ]; then
+     . ~/.bashrc-local
+fi
