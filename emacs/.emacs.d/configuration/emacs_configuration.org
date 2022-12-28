@@ -348,8 +348,7 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 
   ;;   ;; (use-package lsp-treemacs   :init
-  ;;   ;;   (lsp-tr
-  eemacs-sync-mode 1))
+  ;;   ;;   (lsp-treemacs-sync-mode 1))
 
 
     (use-package eglot
