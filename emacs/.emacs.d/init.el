@@ -2,7 +2,8 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;;; Follow links always (so it can follow dotfiles files)
-(setq-default vc-follow-symlinks t)
+(setq-default vc-follow-symlinks t
+  package-native-compile t)
 
 ;; (debug-on-entry 'package-initialize)
 ;;; We need org-babel-tangle-file available

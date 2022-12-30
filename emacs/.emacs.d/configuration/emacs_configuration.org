@@ -8,7 +8,9 @@
 #+begin_src elisp
   (setq-default package-archives
                 '(("elpa" . "https://elpa.gnu.org/packages/")
-                  ("melpa" . "https://melpa.org/packages/"))
+                  ("melpa" . "https://melpa.org/packages/")
+                  ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                  )
                 )
 #+end_src
 
@@ -202,6 +204,10 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
     (use-package tree-sitter)
     )
 
+;; Tree sitter binaries
+;; Using straight, go to straight/repos/tree-sitter-langs
+;; and run ./script/compile all (or select language)
+;; also need to install tree-sitter-cli (with cargo for example)
 (use-package tree-sitter-langs)
 
 (global-tree-sitter-mode)
