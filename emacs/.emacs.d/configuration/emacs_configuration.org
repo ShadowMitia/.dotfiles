@@ -187,7 +187,6 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 #+begin_src elisp
   (use-package magit
-    :ensure t
     :bind ("C-x g" . magit-status))
 
   (use-package magit-todos)
@@ -222,7 +221,7 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 #+begin_src elisp
 
     (use-package yasnippet
-      :ensure
+
       :config
       (yas-reload-all)
       (add-hook 'prog-mode-hook 'yas-minor-mode)
@@ -234,7 +233,7 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
     ;; (setq lsp-keymap-prefix "C-c l")
 
     ;; (use-package lsp-mode
-    ;;   :ensure
+    ;;
     ;;   :commands lsp
     ;;   :init
     ;;   :custom
@@ -287,7 +286,7 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 
     ;; (use-package lsp-ui
-    ;;   :ensure
+    ;;
     ;;   :commands lsp-ui-mode
     ;;   :custom
     ;;   ;; (lsp-ui-peek-always-show t)
@@ -367,7 +366,7 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
     ;; (use-package company
     ;;   :after eglot
-    ;;   :ensure
+    ;;
     ;;   :hook (eglot-managed-mode . company-mode)
     ;;   :custom
     ;;   (company-idle-delay 0.0) ;; how long to wait until popup
@@ -482,7 +481,7 @@ Install shellcheck for better shell linting
 
 
     ;; (use-package flycheck
-    ;;   :ensure
+    ;;
     ;;   :hook ((flycheck-mode . flymake-mode-off))
     ;;   :config
     ;;   (global-flycheck-mode)
@@ -633,7 +632,6 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
 
     (use-package treemacs-magit
       :after (treemacs magit)
-      :ensure t
       )
 #+end_src
 
@@ -720,7 +718,7 @@ LSP will ask to install clangd.
     )
 
   ;; (use-package lsp-pyright
-  ;;   :ensure t
+  ;;    t
   ;;   :hook (python-mode . (lambda ()
   ;;                          (require 'lsp-pyright)
   ;;                          (lsp))))
@@ -827,9 +825,7 @@ Investigate?
 #+begin_src elisp
   (setq fill-column 80)
 
-  (use-package all-the-icons
-    :ensure t
-    )
+  (use-package all-the-icons)
 
   ;; don't interrupt me with native compilation warnings
   (setq native-comp-async-report-warnings-errors nil)
