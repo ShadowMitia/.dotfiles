@@ -5,6 +5,7 @@
 	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 	excludesFile = ~/.global-gitignore
+  attributesfile = ~/.gitattributes
 
 [user]
 # Please adapt and uncomment the following lines:
@@ -56,6 +57,17 @@
 	amend = commit --amend --reuse-message=HEAD
   # Show path to git root
   root = rev-parse --show-toplevel
+
+# From https://www.n16f.net/blog/improving-git-diffs-for-lisp/
+[diff "common-lisp"]
+    xfuncname="^\\((def\\S+\\s+\\S+)"
+
+[diff "elisp"]
+    xfuncname="^\\((((def\\S+)|use-package)\\s+\\S+)"
+
+# From https://mastodon.social/@bram85@emacs.ch/109789123182991414
+[diff "org"]
+        xfuncname="^\\*+ +(.*)$"
 
 # Private work specific settings
 # This file will give overrides where needed
