@@ -197,20 +197,12 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
 
 #+begin_src elisp
 
-  ;; tree-sitter is part of core from emacs 29
-  (when (< emacs-major-version 29)
 
-    (use-package tree-sitter)
-    )
-
-;; Tree sitter binaries
-;; Using straight, go to straight/repos/tree-sitter-langs
-;; and run ./script/compile all (or select language)
-;; also need to install tree-sitter-cli (with cargo for example)
-(use-package tree-sitter-langs)
-
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+(use-package treesit-auto
+  :config
+  (setq treesit-auto-install t)
+  (global-treesit-auto-mode)
+  )
 
 #+end_src
 
@@ -351,15 +343,19 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
   ;;   ;; (use-package lsp-treemacs   :init
   ;;   ;;   (lsp-treemacs-sync-mode 1))
 
-
     (use-package eglot
       :after yasnippet
+      :straight (:type built-in)
       :hook (
-             (prog-mode . eglot-ensure)
+             (prog-mode . (lambda ()
+	     		(eglot-ensure)))
              ((markdown-mode text-mode) . eglot-ensure)
              )
-      :custom
+              :custom
       ((eglot-autoshutdown t))
+      :config
+      (add-hook 'eglot-managed-mode-hook #'eglot-inlay-hints-mode)
+
       )
 
 
@@ -693,7 +689,6 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
   (add-hook 'rst-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 
-
 ** Automatically refresh buffers when files are updated!
 
 #+begin_src elisp
@@ -703,10 +698,36 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
 
 * Programming
 
-
 ** C++
 
-LSP will ask to install clangd.
+To get the most out of it, your project needs a compile_commands.json
+If not using a builder that can export compile_commands.json, you can
+user bear https://github.com/rizsotto/Bear
+
+You can add a .clangd at the root of the workspace you are working on.
+Can also be a user file.
+This file allows will control how clangd acts, and will refine or give
+more details during analysis of the code.
+
+Example
+
+#+begin_src
+CompileFlags:
+ CompilationDatabase: Ancestors
+
+Diagnostics:
+  ClangTidy:
+    Add: [modernize*, bugprone*, misc*, performance*, readability*]
+    Remove: modernize-use-trailing-return-type
+  UnusedIncludes: Strict
+
+---
+
+If:
+  PathMatch: .*\.hh
+CompileFlags:
+  Add: [-xc++]
+#+end_src
 
 ** Python
 
@@ -727,7 +748,12 @@ LSP will ask to install clangd.
 
 #+end_src
 
+If lsp can't find system headers, you might be missing
 
+sudo apt-get install libc++-dev or libstdc++-dev
+
+Make sure you have the correct one installed, and the right version.
+(Use latest by default).
 
 ** Projectile
 

@@ -122,7 +122,7 @@ if command -v yt-dlp &> /dev/null; then
 
 function dla
 {
-    if [ -z $1 ]
+    if [ -z "$1" ]
     then
   echo 'Usage: dla "URL"'
     else
@@ -197,6 +197,8 @@ if command -v emacs &> /dev/null; then
     alias vi="emacs"
 fi
 
+command -v docker &> /dev/null && alias OMG_DOCKER_Y_U_TAKE_SO_MUCH_SPACE="docker system prune -f"
+
 # oh my posh
 #if command -v oh-my-posh &> /dev/null; then
 #    eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/powerlevel10k_rainbow.omp.json)"
@@ -219,10 +221,15 @@ fi
 # fnm
 if [ -d "$HOME/.fnm" ]; then
 	export PATH="$HOME/.fnm":$PATH
-	eval "`fnm env`"
+	eval "$(fnm env)"
 fi
 
+# fzf
+if command -v fzf &> /dev/null; then
+  source /usr/share/doc/fzf/examples/key-bindings.bash
+fi
 
+# Starship prompt
 eval "$(starship init bash)"
 
 # Keep last, apply local only, non-synced settings.
