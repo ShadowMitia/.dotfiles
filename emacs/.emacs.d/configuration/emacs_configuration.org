@@ -383,13 +383,6 @@ TODO: add ruff to eglot
   (eglot-sync-connect 0) ; async, do not block
   (eglot-extend-to-xref t) ; can be interesting!
   (eglot-report-progress nil) ; disable annoying messages in echo area!
-  :config
-  ;;(add-to-list 'eglot-server-programs
-  ;;'(
-  ;;clang              ((python-mode python-ts-mode) . ("ruff" "--quiet" "--stdin-filename=stdin" "-"))
-  ;;((c-mode c-ts-mode c++-mode c++-ts-mode) . ("clangd" "-background-index" "-log=error" "--header-insertion=never"))
-  ;;))
-
   )
 
 
@@ -407,8 +400,6 @@ TODO: add ruff to eglot
 
 
 ;; From https://github.com/minad/corfu#installation-and-configuration
-;; TODO: try orderless https://github.com/oantolin/orderless
-;; TODO: conflict with multiple-cursors
 (use-package corfu
   ;; Optional customizations
   :custom
@@ -504,14 +495,6 @@ TODO: add ruff to eglot
 (use-package flymake-collection
   :hook (after-init . flymake-collection-hook-setup))
 
-(use-package flymake-ruff
-  :hook ((python-mode-hook . flymake-ruff-load)
-	 (python-ts-mode-hook . flymake-ruff-load))
-  )
-
-;;  (add-hook 'python-base-mode-hook 'flymake-mode)
-;;  (setq python-flymake-command '("ruff" "--quiet" "--stdin-filename=stdin" "-"))
-
 #+end_src
 
 * Rust lang
@@ -542,7 +525,7 @@ rustup component add rust-analyzer
 
   ;; TODO: rgb_linear and rgba_linear
   ;; TODO: see if it is possible to add transparency support?
-  ;; TODO move to tree-sitter?
+  ;; TODO move to tree-sitter? with svg-lib too?
   (defvar
     rainbow-custom-keywords
     '(
@@ -573,6 +556,8 @@ rustup component add rust-analyzer
 #+end_src
 
 ** Hightlight some keywords
+
+OBSOLETE
 
 From https://writequit.org/org/
 
