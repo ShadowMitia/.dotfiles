@@ -1,0 +1,28 @@
+CompileFlags:
+ CompilationDatabase: Ancestors
+InlayHints:
+  Enabled: Yes
+  Designators: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+Diagnostics:
+  ClangTidy:
+    Add: [modernize*, bugprone*, misc*, performance*, readability*]
+    Remove: modernize-use-trailing-return-type
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+
+---
+
+If:
+  PathMatch: .*\.hh
+CompileFlags:
+  Add: [-xc++]
+---
+
+If:
+  # Note: This is a regexp, notice '.*' at the end of PathMatch string.
+  PathMatch: [out/.*, build/.*]
+Index:
+  # Disable slow background indexing of these files.
+  Background: Skip
