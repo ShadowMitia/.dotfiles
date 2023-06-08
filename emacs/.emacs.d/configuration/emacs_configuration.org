@@ -793,6 +793,10 @@ Add: [-xc++]
 
 #+end_src
 
+* Stuff
+
+TODO: sort out
+
 #+begin_src elisp
 
 (use-package gnuplot)
@@ -803,7 +807,6 @@ Add: [-xc++]
 #+end_src
 
 * Which-key
-
 
 #+begin_src elisp
 (use-package which-key
@@ -839,9 +842,6 @@ From https://github.com/Atman50/emacs-config
 
 "When a file is opened and it is determined there is no mode (fundamental-mode) this code reads the first line of the file looking for an appropriate shebang for either python or bash and sets the mode for the file."
 
-TODO: more modes?
-TODO: could use some more shebang alternatives
-
 #+begin_src elisp
 
 (cl-defun my-find-file-hook ()
@@ -851,10 +851,15 @@ Script-type is read from #!/... at top of file."
       (ignore-errors
 	(save-excursion
 	  (goto-char (point-min))
-	  (re-search-forward "^#!\s*/.*/\\(python\\|bash\\|sh\\).*$")
-	  (if (string= (match-string 1) "python")
-	      (python-mode)
-	    (sh-mode))))))
+	  (re-search-forward "^#!\s*/.*/\\(python\\|bash\\|sh\\|ruby\\|make\\|perl\\|lua\\).*$")
+	  (cond ((string= (match-string 1) "python") (python-mode))
+	        ((string= (match-string 1) "bash") (bash-mode))
+		((string= (match-string 1) "sh") (sh-mode))
+		((string= (match-string 1) "ruby") (ruby-mode))
+		((string= (match-string 1) "make") (makefile-mode))
+		((string= (match-string 1) "perl") (perl-mode))
+		((string= (match-string 1) "lua") (lua-mode))
+	  )))))
 (add-hook 'find-file-hook #'my-find-file-hook)
 #+end_src
 
