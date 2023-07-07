@@ -612,19 +612,23 @@ TODO: make colour match Nano theme
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
 #+end_src
 
+** All the icons
+
+#+begin_src elisp
+(use-package all-the-icons
+  :straight (all-the-icons :type git :host github :repo "domtronn/all-the-icons.el" :branch "svg" :files (:defaults "svg"))
+  :if (display-graphic-p))
+
+(use-package all-the-icons-completion
+  :init (all-the-icons-completion-mode))
+
+#+end_src
+
 ** Treemacs
 
 Config from https://medspx.fr/blog/Debian/emacs_2020/
 
-
 #+begin_src elisp
-
-(use-package treemacs-all-the-icons)
-
-;; run all-the-icons-install-fonts the first time!
-(use-package all-the-icons-dired :hook (dired-mode . all-the-icons-dired-mode))
-(use-package all-the-icons-completion
-  :init (all-the-icons-completion-mode))
 
 (use-package treemacs
   :after (treemacs-all-the-icons)
@@ -765,6 +769,12 @@ Add: [-xc++]
   :config
   (setq python-indent 4)
   )
+
+
+(use-package flymake-ruff
+    :ensure t
+    :hook (python-mode . flymake-ruff-load))
+
 #+end_src
 
 
