@@ -372,7 +372,12 @@ Automatically install treesit parsers
 (use-package tree-sitter
   :config
   (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+  (add-to-list 'tree-sitter-major-mode-language-alist
+               '(rustic-mode . rust))
+  :hook ((rustic-mode . tree-sitter-mode)
+         (rustic-mode . tree-sitter-hl-mode))
+  )
 #+end_src
 
 * Yasnippet
@@ -587,7 +592,23 @@ Things to try, sort out, or that I don't just use often.
 ** Combobulate
 
 #+begin_src emacs-lisp :tangle yes
-(use-package combobulate)
+(use-package combobulate
+    :preface
+    ;; You can customize Combobulate's key prefix here.
+    ;; Note that you may have to restart Emacs for this to take effect!
+    (setq combobulate-key-prefix "C-c o")
+
+    ;; Optional, but recommended.
+    ;;
+    ;; You can manually enable Combobulate with `M-x
+    ;; combobulate-mode'.
+    :hook ((python-ts-mode . combobulate-mode)
+           (js-ts-mode . combobulate-mode)
+           (css-ts-mode . combobulate-mode)
+           (yaml-ts-mode . combobulate-mode)
+           (json-ts-mode . combobulate-mode)
+           (typescript-ts-mode . combobulate-mode)
+           (tsx-ts-mode . combobulate-mode)))
 #+end_src
 
 ** Rust lang
