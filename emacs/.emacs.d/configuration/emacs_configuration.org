@@ -28,8 +28,6 @@
 
 ** straight.el setup
 
-TODO: probably move to built-in way?
-
 #+begin_src elisp
 
 ;; https://www.reddit.com/r/emacs/comments/mtb05k/emacs_init_time_decreased_65_after_i_realized_the/
@@ -54,9 +52,7 @@ TODO: probably move to built-in way?
 (straight-use-package 'use-package) ;; Install use-package
 #+end_src
 
-
 **
-
 #+begin_src elisp
 (setq gc-cons-threshold (* 100 1024 1024)
       large-file-warning-threshold nil
@@ -64,42 +60,62 @@ TODO: probably move to built-in way?
       )
 #+end_src
 
-* Org
+* No-littering
+
+Needs to be setup early!
+
+See https://systemcrafters.net/emacs-tips/keeping-folders-clean/
 
 #+begin_src elisp
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+;; auto-save-mode doesn't create the path automatically!
+(make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
+
+(setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
+      auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+
+(use-package no-littering)
+#+end_src
+
+* TODO Org
+
+Setting up org-mode early, and point it to the built-in version.
+This avoids version issues.
+
+#+begin_src elisp
+;; Automatically paste a online link with the description set to the title of the page
+(use-package org-cliplink)
+
+;; Don't want to create table of content manually in org mode
+(use-package toc-org)
+#+end_src
+
+#+begin_src elisp
+
 (use-package org
   :straight (:type built-in)
   :custom
+  (org-adapt-indentation nil)        ; Adaptive indentation
+  (org-confirm-babel-evaluate nil)     ; No confirmation before executing code
+  (org-edit-src-content-indentation 0) ; No relative indentation for code blocks
+  (org-export-with-sub-superscripts '{})
   (org-fold-catch-invisible-edits 'smart)
   (org-fontify-quote-and-verse-blocks t)
-  (org-special-ctrl-a/e t)
-  (org-export-with-sub-superscripts '{})
+  (org-fontify-whole-block-delimiter-line t) ; Fontify whole block
+  (org-latex-listings 'minted)
   (org-pretty-entities t)
   (org-pretty-entities-include-sub-superscripts t)
+  (org-special-ctrl-a/e t)
+  (org-src-fontify-natively t) ; Fontify code in code blocks.
+  (org-src-tab-acts-natively t) ; Tab acts as in source editing
+  (org-startup-with-inline-images t) ; Show inline images when loading org files
   (org-use-sub-superscripts '{}) ; Do the same when rendering the Org buffer
-  (org-src-fontify-natively t)
-
   )
 
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
-	      org-adapt-indentation nil          ; Adaptive indentation
-	      org-src-tab-acts-natively t        ; Tab acts as in source editing
-	      org-confirm-babel-evaluate nil     ; No confirmation before executing code
-	      org-edit-src-content-indentation 0 ; No relative indentation for code blocks
-	      org-fontify-whole-block-delimiter-line t) ; Fontify whole block
-(setq org-confirm-babel-evaluate nil)
-(setq org-src-tab-acts-natively t)
-
-(setq org-latex-listings 'minted)
-
-(setq-default org-src-fontify-natively t         ; Fontify code in code blocks.
-              org-adapt-indentation nil          ; Adaptive indentation
-              org-src-tab-acts-natively t        ; Tab acts as in source editing
-              org-confirm-babel-evaluate nil     ; No confirmation before executing code
-              org-edit-src-content-indentation 0 ; No relative indentation for code blocks
-              org-fontify-whole-block-delimiter-line t) ; Fontify whole block
-
 (use-package org-contrib)
+
+(use-package ob-rust)
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
@@ -112,7 +128,6 @@ TODO: probably move to built-in way?
    (sed . t)
    (dot . t)
    (latex . t)
-   ;;   (ly . t)
    (lua . t)
    (lisp . t)
    (makefile . t)
@@ -125,29 +140,21 @@ TODO: probably move to built-in way?
    (sql . t)
    (sqlite . t)
    (calc . t)
-   ;; contrib
+   ;; requires contrib
    (coq . t)
+   ;; requires third-party package
+   (rust . t)
    ))
 
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
-
 #+end_src
-
-
-
-
-** Modernify
-
-TODO: CUA mode?
-
-#+begin_src elisp
-(delete-selection-mode 1)               ; Replace region when inserting text
-#+end_src
-
 
 * Theme
 
-From https://github.com/rougier/dotemacs/blob/master/dotemacs.org
+NANO theme!
+
+Note: it overrides all tool/menu bars and disables them.
+
+Code borrowed from https://github.com/rougier/dotemacs/blob/master/dotemacs.org
 
 #+begin_src elisp
 ;; NANO splash
@@ -179,12 +186,33 @@ From https://github.com/rougier/dotemacs/blob/master/dotemacs.org
  '(minibuffer-header :type git :host github :repo "rougier/minibuffer-header"))
 
 ;; SVG tags, progress bars & icons
-(straight-use-package
- '(svg-lib :type git :host github :repo "rougier/svg-lib"))
+;;(straight-use-package
+;; '(svg-lib :type git :host github :repo "rougier/svg-lib"))
+
+(use-package svg-lib
+  :straight (svg-lib :type git :host github :repo "rougier/svg-lib")
+  )
 
 ;; Replace keywords with SVG tags
 (straight-use-package
  '(svg-tag-mode :type git :host github :repo "rougier/svg-tag-mode"))
+
+(use-package svg-tag-mode
+  :straight (svg-tag-mode :type git :host github :repo "rougier/svg-tag-mode")
+  :config   (global-svg-tag-mode t)
+
+  ;; TODO: Make regexp more specific
+  ;; - need handle spaces: thingTODOthing
+  ;; - lowercase?
+  ;; - include ':'? :TODO: ?
+  (setq svg-tag-tags
+	'(
+	  ("\\(TODO\\|FIXME\\|NOTES\\|NOTE\\)" . ((lambda (tag) (svg-lib-tag tag nil :background "#d08770" :stroke 2 :foreground "white") ) ))
+	  ("NOCOMMIT" . ((lambda (tag) (svg-lib-tag tag nil :background "#bf616a" :stroke 2 :foreground "white") )))
+	  ))
+  )
+
+
 
 ;; Dashboard for mu4e
 (straight-use-package
@@ -230,10 +258,6 @@ From https://github.com/rougier/dotemacs/blob/master/dotemacs.org
   (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
   (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
   (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
-  ;;(add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
-  ;;(add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
-  ;;(add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
-  ;;(add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
   (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
   (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
   (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
@@ -241,23 +265,19 @@ From https://github.com/rougier/dotemacs/blob/master/dotemacs.org
   (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode)
 
   )
-
-
-
-(use-package svg-lib)
-(use-package svg-tag-mode
-  :config
-  (setq svg-tag-tags
-	'(
-	  ("\\(TODO\\|FIXME\\|NOTES\\|NOTE\\)" . ((lambda (tag) (svg-lib-tag tag nil :background "#d08770" :stroke 2 :foreground "white") ) ))
-	  ("NOCOMMIT" . ((lambda (tag) (svg-lib-tag tag nil :background "#bf616a" :stroke 2 :foreground "white") )))
-	  ))
-  (global-svg-tag-mode)
-  )
 #+end_src
 
-* GUI modifications
+* Global settings
+** Modernify
 
+Quality of life improvements, especially when using other software.
+
+#+begin_src elisp
+(delete-selection-mode 1) ; Replace region when inserting text
+(cua-mode 1) ; Enable regular C-c/C-v/C-x cut/paste/paste
+#+end_src
+
+** GUI modifications
 
 Disable splash screen
 
@@ -273,6 +293,7 @@ Note: menu-bar-mode is recommended to discover new features (especially for begi
 ;;(menu-bar-mode -1)
 ;;(tool-bar-mode -1)
 (scroll-bar-mode -1)
+(fringe-mode 10)
 #+end_src
 
 #+begin_src elisp
@@ -280,6 +301,8 @@ Note: menu-bar-mode is recommended to discover new features (especially for begi
 #+end_src
 
 ** Typography
+
+
 
 ** Keep emacs clean!
 
@@ -308,14 +331,13 @@ Mostly taken from https://github.com/daviwil/emacs-from-scratch/blob/master/show
   (show-paren-mode 1))
 #+end_src
 
-** remove whitespace
+** deal with whitespace
 
-TODO: doesn't seem to work properly?
-
-#+begin_src elisp :tangle no
+#+begin_src elisp
 (use-package ws-butler
-  :hook (text-mode . prog-mode)
-  )
+  :hook (prog-mode . ws-butler-mode))
+
+
 #+end_src
 
 
@@ -328,17 +350,44 @@ TODO: doesn't seem to work properly?
 (use-package magit-todos)
 #+end_src
 
+* Which-key
+
+#+begin_src elisp
+(use-package which-key
+  :custom
+  (which-key-mode t)
+  )
+#+end_src
+
 
 * Tree-sitter
 
-TODO: clean this up
+Automatically install treesit parsers
 
 #+begin_src elisp
 (use-package treesit-auto
   :config
-  (setq treesit-auto-install t)
-  (global-treesit-auto-mode)
-  )
+  (global-treesit-auto-mode))
+
+(use-package tree-sitter
+  :config
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+#+end_src
+
+* Yasnippet
+#+begin_src elisp
+(use-package yasnippet
+  :ensure t
+  :hook ((text-mode
+          prog-mode
+          conf-mode
+          snippet-mode) . yas-minor-mode-on)
+  :init
+  (setq yas-snippet-dir "~/.emacs.d/snippets")
+  :config (yas-reload-all))
+
+(use-package yasnippet-snippets)
 #+end_src
 
 * Language Server Protocol
@@ -352,8 +401,8 @@ pip install ruff
 npm i -g bash-language-server
 rustup component add rust-analyzer
 apt install shellcheck
-#+end_src
 
+#+end_src
 
 TODO: add ruff to eglot
 
@@ -362,27 +411,20 @@ TODO: add ruff to eglot
 (setq-default sh-shellcheck-arguments "-x") ; follow sourced libraries
 (add-hook 'sh-base-mode-hook 'flymake-mode) ; requires shellcheck
 
-
-(use-package yasnippet
-  :config
-  (use-package yasnippet-snippets)
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode)
-  (yas-global-mode t))
-
+;; Eglot is part of emacs since version 29
 (use-package eglot
   :after yasnippet
   :straight `(:type ,(if (< emacs-major-version 29) 'git 'built-in))
-  ;;:hook (
-  ;;      ((markdown-mode text-mode python-mode python-ts-mode c-mode c-ts-mode c++-mode c++-ts-mode) . eglot-ensure)
-  ;;      (eglot-managed-mode . eglot-inlay-hints-mode)
-  ;;)
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect 0) ; async, do not block
-  (eglot-extend-to-xref t) ; can be interesting!
+  (eglot-extend-to-xref t)
   (eglot-report-progress nil) ; disable annoying messages in echo area!
+  :bind (:map eglot-mode-map
+              ("C-c r" . #'eglot-rename)
+              ("C-;" . #'xref-find-definitions)
+              ("C-:" . #'xref-find-references)
+              ("C-c a" . #'eglot-code-actions))
   )
 
 
@@ -392,11 +434,31 @@ TODO: add ruff to eglot
   (eldoc-documentation-strategy #'eldoc-documentation-compose))
 
 (use-package eldoc-box
-  :straight t
+  :diminish (eldoc-mode eldoc-box-hover-at-point-mode)
   :hook (prog-mode . eldoc-box-hover-at-point-mode)
-  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
+  :demand t
+  :config
+  (defun rex/eldoc-box-scroll-up ()
+    "Scroll up in `eldoc-box--frame'"
+    (interactive)
+    (with-current-buffer eldoc-box--buffer
+      (with-selected-frame eldoc-box--frame
+	(scroll-down 3))))
+  (defun rex/eldoc-box-scroll-down ()
+    "Scroll down in `eldoc-box--frame'"
+    (interactive)
+    (with-current-buffer eldoc-box--buffer
+      (with-selected-frame eldoc-box--frame
+	(scroll-up 3))))
+  :bind
+  ("C-k" . 'rex/eldoc-box-scroll-up)
+  ("C-j" . 'rex/eldoc-box-scroll-down)
+  ("M-h" . 'eldoc-box-help-at-point)
+  )
 
 (setq-default tab-always-indent 'complete) ; Indent first then try completions
+
+(setq read-extended-command-predicate #'command-completion-default-include-p)
 
 
 ;; From https://github.com/minad/corfu#installation-and-configuration
@@ -418,8 +480,9 @@ TODO: add ruff to eglot
   (completion-styles '(basic))
   (corfu-popupinfo-delay 0.1)
   (corfu-popupinfo-max-height 30)
+  (corfu-popupinfo-resize t)
   :straight (corfu :files (:defaults "extensions/*")
-		   :includes (corfu-info corfu-history))
+		   :includes (corfu-info corfu-history corfu-popuinfo))
   :bind
   (:map corfu-map
 	("TAB" . corfu-next)
@@ -431,6 +494,14 @@ TODO: add ruff to eglot
   (corfu-popupinfo-mode))
 
 
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
 (use-package orderless
   :custom
   (completion-styles '(substring orderless basic))
@@ -439,21 +510,6 @@ TODO: add ruff to eglot
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   )
-
-;; A few more useful configurations...
-(use-package emacs
-  :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
-
-  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
-
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
 
 
 (use-package kind-icon
@@ -468,6 +524,9 @@ TODO: add ruff to eglot
   )
 
 #+end_src
+
+#+RESULTS:
+: t
 
 * PDF-Tools
 
@@ -490,14 +549,48 @@ TODO: add ruff to eglot
 * Flymake
 
 #+begin_src elisp
-(use-package flymake)
+(use-package flymake
+:config
+(setq flymake-fringe-indicator-position 'left-fringe
+           flymake-suppress-zero-counters t
+           flymake-start-on-flymake-mode t
+           flymake-no-changes-timeout 0.3
+           flymake-start-on-save-buffer t
+           flymake-proc-compilation-prevents-syntax-check t
+           flymake-wrap-around nil)
+  )
 
 (use-package flymake-collection
   :hook (after-init . flymake-collection-hook-setup))
 
 #+end_src
 
-* Rust lang
+* Programming
+
+** Random
+
+Things to try, sort out, or that I don't just use often.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package protobuf-mode :defer t)
+(use-package yaml-mode :defer t)
+(use-package toml-mode :defer t)
+(use-package typescript-mode :defer t)
+
+(use-package restclient
+  :mode ("\\.restclient$" . restclient-mode))
+
+(use-package lua-mode)
+#+end_src
+
+
+** Combobulate
+
+#+begin_src emacs-lisp :tangle yes
+(use-package combobulate)
+#+end_src
+
+** Rust lang
 
 https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
 
@@ -510,11 +603,6 @@ rustup component add rust-analyzer
 (use-package rustic)
 #+end_src
 
-* YAML
-
-#+begin_src elisp
-(use-package yaml-mode)
-#+end_src
 
 ** Colours
 
@@ -671,24 +759,18 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
 ** CSV
 
 #+begin_src elisp
-
-
 (use-package csv-mode :straight t
   ;; Always enter CSV mode in align mode; makes it easier to read.
-  :hook (csv-mode . csv-align-mode))
-
-
+  :hook (csv-mode . csv-align-mode)
+  )
 #+end_src
 
 ** Ripgrep
-
 
 #+begin_src elisp
 (use-package rg
   :config (rg-enable-menu))
 #+end_src
-
-
 
 ** Editorconfig
 
@@ -697,13 +779,6 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
   :straight t
   :hook (prog-mode . editorconfig-mode)
   )
-#+end_src
-
-** Clang-format
-
-#+begin_src elisp
-(use-package clang-format
-  :straight t)
 #+end_src
 
 ** Display 80 columns limit
@@ -719,8 +794,6 @@ Config from https://medspx.fr/blog/Debian/emacs_2020/
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
 #+end_src
-
-* Programming
 
 ** C++
 
@@ -762,6 +835,14 @@ CompileFlags:
 Add: [-xc++]
 #+end_src
 
+** Clang-format
+
+#+begin_src elisp
+(use-package clang-format
+  :straight t)
+#+end_src
+
+
 ** Python
 
 #+begin_src elisp
@@ -772,13 +853,12 @@ Add: [-xc++]
 
 
 (use-package flymake-ruff
-    :ensure t
-    :hook (python-mode . flymake-ruff-load))
+  :ensure t
+  :hook (python-mode . flymake-ruff-load))
 
 #+end_src
 
-
-** Projectile
+* Projectile
 
 #+begin_src elisp
 (use-package projectile
@@ -803,9 +883,7 @@ Add: [-xc++]
 
 #+end_src
 
-* Stuff
-
-TODO: sort out
+* Gnuplot/Graphviz
 
 #+begin_src elisp
 
@@ -816,23 +894,37 @@ TODO: sort out
 
 #+end_src
 
-* Which-key
+* Web
 
-#+begin_src elisp
-(use-package which-key
-  :custom
-  (which-key-mode t)
+Borrowed from https://gitlab.univ-lille.fr/michael.hauspie/emacs/-/blob/master/configuration.org
+
+#+begin_src emacs-lisp :tangle yes
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   )
+(use-package rainbow-mode)
+(use-package simple-httpd)
+(use-package impatient-mode)
 #+end_src
-
 
 * Docker
 
 #+begin_src elisp
-(use-package dockerfile-mode
-  :mode ("Dockerfile\\'" . dockerfile-mode))
+(use-package dockerfile-mode)
+(use-package docker-compose-mode)
+(use-package docker)
+(use-package docker-tramp)
+(use-package docker-api)
+(use-package docker-cli)
 #+end_src
-
 
 * Mastodon
 
@@ -863,13 +955,13 @@ Script-type is read from #!/... at top of file."
 	  (goto-char (point-min))
 	  (re-search-forward "^#!\s*/.*/\\(python\\|bash\\|sh\\|ruby\\|make\\|perl\\|lua\\).*$")
 	  (cond ((string= (match-string 1) "python") (python-mode))
-	        ((string= (match-string 1) "bash") (bash-mode))
+		((string= (match-string 1) "bash") (bash-mode))
 		((string= (match-string 1) "sh") (sh-mode))
 		((string= (match-string 1) "ruby") (ruby-mode))
 		((string= (match-string 1) "make") (makefile-mode))
 		((string= (match-string 1) "perl") (perl-mode))
 		((string= (match-string 1) "lua") (lua-mode))
-	  )))))
+		)))))
 (add-hook 'find-file-hook #'my-find-file-hook)
 #+end_src
 
@@ -887,16 +979,14 @@ Script-type is read from #!/... at top of file."
 #+end_src
 
 
-* Centaur tabs
-
-https://github.com/ema2159/centaur-tabs
-
-Investigate?
-
 * Random
 
 #+begin_src elisp
-(setq fill-column 80)
+
+(if (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
+(setq-default fill-column 80)
 
 ;; don't interrupt me with native compilation warnings
 (setq native-comp-async-report-warnings-errors nil)
@@ -911,14 +1001,14 @@ Investigate?
 
 * References
 
-Emacs manual and tutorial
-https://www.masteringemacs.org
-https://systemcrafters.net/videos/
-https://github.com/daviwil/emacs-from-scratch
-https://github.com/rougier/dotemacs/blob/master/dotemacs.org
-https://writequit.org/org/
-https://medspx.fr/blog/Debian/emacs_2020/
-https://sachachua.com/dotemacs/index.html
-https://codeberg.org/takeonrules/dotemacs/src/branch/main/emacs.d/configuration.orghttps://kristofferbalintona.me/posts/202202270056/
-https://kristofferbalintona.me/posts/202202270056/
-https://github.com/abougouffa/minemacs
+- Emacs manual and tutorial
+- https://www.masteringemacs.org
+- https://systemcrafters.net/
+- https://github.com/daviwil/emacs-from-scratch
+- https://github.com/rougier/dotemacs/blob/master/dotemacs.org
+- https://writequit.org/org/
+- https://medspx.fr/blog/Debian/emacs_2020/
+- https://sachachua.com/dotemacs/index.html
+- https://codeberg.org/takeonrules/dotemacs/src/branch/main/emacs.d/configuration.orghttps://kristofferbalintona.me/posts/202202270056/
+- https://kristofferbalintona.me/posts/202202270056/
+- https://github.com/abougouffa/minemacs

@@ -32,5 +32,5 @@ rustflags = ["-Zshare-generics=y"]
 protocol = "sparse"
 
 # Requires sccache installed or evertyhing breaks
-[build]
-rustc-wrapper = "sccache"
+#[build]
+#rustc-wrapper = "sccache"

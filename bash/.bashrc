@@ -208,6 +208,9 @@ command -v docker &> /dev/null && alias OMG_DOCKER_Y_U_TAKE_SO_MUCH_SPACE="docke
 #     . ~/bin/bash.command-not-found
 # fi
 
+export PATH=$PATH:~/.cargo/bin/
+export PATH=$PATH:~/.local/bin/
+
 
 [[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitty +kitten ssh"
 [[ "$TERM" == "xterm-kitty" ]] && alias icat="kitty +kitten icat"

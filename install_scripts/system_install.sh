@@ -69,8 +69,7 @@ apt install apt-transport-https \
             transmission-gtk \
             fzf gnuplot \
             build-essential \
-            aria2 \ # For yt-dlp
-
+            aria2
 
 sudo -u "$real_user" pip3 install --user yt-dlp pygments
 sudo -u "$real_user" flatpak install flathub com.spotify.Client \
