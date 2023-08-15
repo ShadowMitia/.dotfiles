@@ -942,7 +942,6 @@ Borrowed from https://gitlab.univ-lille.fr/michael.hauspie/emacs/-/blob/master/c
 (use-package dockerfile-mode)
 (use-package docker-compose-mode)
 (use-package docker)
-(use-package docker-tramp)
 (use-package docker-api)
 (use-package docker-cli)
 #+end_src
