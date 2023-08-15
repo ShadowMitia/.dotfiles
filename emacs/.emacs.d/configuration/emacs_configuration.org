@@ -373,10 +373,6 @@ Automatically install treesit parsers
   :config
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-  (add-to-list 'tree-sitter-major-mode-language-alist
-               '(rustic-mode . rust))
-  :hook ((rustic-mode . tree-sitter-mode)
-         (rustic-mode . tree-sitter-hl-mode))
   )
 #+end_src
 
@@ -620,8 +616,11 @@ rustup component add rust-analyzer
 #+end_src
 
 #+begin_src elisp
+(use-package rustic
+  :config
 (setq rustic-lsp-client 'eglot)
-(use-package rustic)
+(setq rustic-format-on-save t)
+  )
 #+end_src
 
 
