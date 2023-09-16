@@ -31,7 +31,7 @@ stowit() {
 }
 
 echo ""
-echo "Stowing apps for user: $user" 
+echo "Stowing apps for user: $user"
 
 
 # install apps available to local users and root
@@ -59,11 +59,11 @@ exit 0
 # Set ZSH_THEME="powerlevel10k/powerlevel10k" in .zshrc if not done
 
 # Oh my posh install theme install
-mkdir ~/.poshthemes
-wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip
-unzip ~/.poshthemes/themes.zip -d ~/.poshthemes
-chmod u+rw ~/.poshthemes/*.json
-rm ~/.poshthemes/themes.zip
+# mkdir ~/.poshthemes
+# wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip
+# unzip ~/.poshthemes/themes.zip -d ~/.poshthemes
+# chmod u+rw ~/.poshthemes/*.json
+# rm ~/.poshthemes/themes.zip
 
 echo ""
 echo "##### ALL DONE"
