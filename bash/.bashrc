@@ -239,3 +239,7 @@ eval "$(starship init bash)"
 if [ -f ~/.bashrc-local ]; then
      . ~/.bashrc-local
 fi
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
