@@ -197,6 +197,12 @@ if command -v emacs &> /dev/null; then
     alias vi="emacs"
 fi
 
+if command -v ffmpeg &> /dev/null; then
+  function convert_to_mp4 {
+    ffmpeg -i "${1}" -codec copy "${1%.*}".mp4
+  }
+fi
+
 command -v docker &> /dev/null && alias OMG_DOCKER_Y_U_TAKE_SO_MUCH_SPACE="docker system prune -f"
 
 # oh my posh
